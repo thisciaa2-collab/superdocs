@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SuperDocs — Cargando...</title>
+    
+    <!-- Estilo mínimo por si la conexión es muy lenta, para que se vea limpio -->
+    <style>
+        body {
+            background-color: #05070f;
+            color: #cbd5e1;
+            font-family: system-ui, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .loader {
+            text-align: center;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+    </style>
+
+    <!-- LÓGICA DE REDIRECCIÓN EN JAVASCRIPT -->
+    <script>
+        // Forzamos la redirección inmediata a la pantalla de login
+        window.location.replace("/login");
+    </script>
+</head>
+<body>
+
+    <div class="loader">
+        <p>Iniciando SuperDocs...</p>
+    </div>
+
+</body>
+</html>
