@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚡ SuperDocs — Crear Documento</title>
+
+    <!-- Configuración del Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="shortcut icon" href="favicon-32x32.png" type="image/x-icon">
+    <link rel="apple-touch-icon" href="favicon-32x32.png">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- BARRA LATERAL CON OPCIONES DE CONFIGURACIÓN Y VISIBILIDAD -->
+        <aside class="sidebar">
+            <div class="logo" onclick="window.location.href='home.html'" style="cursor:pointer;">⚡ <span>SuperDocs</span></div>
+            
+            <!-- Perfil de usuario compacto -->
+            <div class="menu-usuario">
+                <div class="usuario-avatar" id="userAvatar">👤</div>
+                <div class="usuario-info">
+                    <div class="usuario-nombre" id="userNombre">Cargando...</div>
+                    <div class="usuario-correo" id="userCorreo">correo@ejemplo.com</div>
+                </div>
+            </div>
+
+            <!-- CONFIGURACIÓN DE PRIVACIDAD -->
+            <div class="grupo-control">
+                <label>Visibilidad del archivo</label>
+                <select id="selectorPrivacidad" onchange="evaluarOpcionPrivacidad()" class="select-personalizado">
+                    <option value="solo_yo">🔒 Solo tú</option>
+                    <option value="amigos">👥 Todos tus amigos</option>
+                    <option value="especifico">🎯 Amigo/s en específico</option>
+                </select>
+            </div>
+
+            <!-- Input Dinámico para Amigos Específicos -->
+            <div class="grupo-control" id="cajaAmigosEspecificos" style="display: none;">
+                <label>Correos de amigos (separados por coma)</label>
+                <input type="text" id="inputAmigosEspecificos" placeholder="ejemplo@mail.com, otro@mail.com" class="input-sidebar">
+            </div>
+
+            <!-- AJUSTES DE FUENTE -->
+            <div class="grupo-control">
+                <label>Tipografía</label>
+                <select id="selectorFuente" onchange="cambiarTipografia(this.value)" class="select-personalizado">
+                    <option value="system-ui">System UI (Por defecto)</option>
+                    <option value="'Segoe UI', Roboto, sans-serif">Segoe UI / Moderno</option>
+                    <option value="'Courier New', Courier, monospace">Monospace / Código</option>
+                    <option value="Georgia, serif">Georgia / Elegante</option>
+                    <option value="'Arial Black', Gadget, sans-serif">Impact / Fuerte</option>
+                </select>
+            </div>
+
+            <!-- BARRA DE HERRAMIENTAS DE FORMATO -->
+            <div class="grupo-control">
+                <label>Estilos Rápidos</label>
+                <button onclick="ejecutarComando('bold')"><b>B</b> Negrita</button>
+                <button onclick="ejecutarComando('italic')"><i>I</i> Itálica</button>
+                <button onclick="insertarBloqueCodigo()" class="btn-codigo">{" "} Bloque Código</button>
+            </div>
+
+            <!-- BOTÓN DE GUARDADO PRINCIPAL -->
+            <div class="grupo-control" style="margin-top: 10px;">
+                <button onclick="guardarArchivoFinal()" class="btn-guardar-archivo">💾 Guardar archivo</button>
+                <button onclick="window.location.href='home.html'" class="btn-volver">❌ Cancelar y Volver</button>
+            </div>
+
+            <!-- Estado de guardado e información métrica -->
+            <div class="estadisticas">
+                <div class="stat-item">Palabras: <span id="valPalabras">0</span></div>
+                <div class="stat-item">Lectura: <span id="valTiempo">0s</span></div>
+                <div id="notificacionEstado" class="guardado-estado" style="color: var(--text-secundario) !important;">Listo para redactar</div>
+            </div>
+        </aside>
+
+        <!-- LIENZO CENTRAL DE ESCRITURA -->
+        <main class="zona-editor">
+            <div class="contenedor-hoja">
+                <input type="text" id="tituloDocumento" class="input-titulo" placeholder="Dale un nombre a tu documento..." value="">
+                <div id="editorTexto" class="editor-hoja" contenteditable="true" placeholder="Empieza a escribir tu magia aquí..."></div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Lógica de control de creación de archivos -->
+    <script type="module" src="createdocument.js"></script>
+</body>
+</html>
