@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SuperDocs — Acceso Seguro</title>
+    <style>
+        /* --- VARIABLES DE DISEÑO PREMIUM --- */
+        :root {
+            --bg-tarjeta: rgba(10, 15, 30, 0.75);
+            --border-color: rgba(255, 255, 255, 0.12);
+            --text-principal: #f8fafc;
+            --text-secundario: #cbd5e1;
+            --accent-cian: #38bdf8;
+            --accent-cian-glow: rgba(56, 189, 248, 0.4);
+            --accent-error: #f87171;
+            --fuente: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: var(--fuente);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* --- FONDO ARCOÍRIS ANIMADO EN LOOP --- */
+        body {
+            background: linear-gradient(124deg, #ff2400, #e81d1d, #e8b71d, #1de840, #1ddde8, #2b1de8, #dd1de8, #ff2400);
+            background-size: 1600% 1600%;
+            animation: movimientoArcoiris 20s ease infinite;
+            color: var(--text-principal);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 40px 20px;
+            position: relative;
+        }
+
+        /* Capa oscura sutil para suavizar el arcoíris y proteger la vista */
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.3);
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        /* --- CONTENEDOR PRINCIPAL SPLIT --- */
+        .wrapper-principal {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            width: 100%;
+            max-width: 950px;
+            background-color: rgba(5, 7, 15, 0.4);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-color);
+            border-radius: 28px;
+            overflow: hidden;
+            box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.8);
+        }
+
+        /* --- PANAL LATERAL IZQUIERDO (FEATURES) --- */
+        .panel-features {
+            flex: 1;
+            background-color: rgba(10, 15, 30, 0.4);
+            padding: 48px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 35px;
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .feature-imagen {
+            width: 80px;
+            height: 80px;
+            border-radius: 16px;
+            object-fit: cover;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            background-color: rgba(0, 0, 0, 0.2);
+            flex-shrink: 0;
+        }
+
+        .feature-texto-box {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .feature-texto {
+            font-size: 1rem;
+            line-height: 1.5;
+            color: var(--text-principal);
+            font-weight: 500;
+            min-height: 48px; /* Previene saltos de layout mientras se escribe */
+        }
+
+        /* Cursor parpadeante de escritura */
+        .cursor-tipeo::after {
+            content: '|';
+            animation: parpadeoCursor 0.8s infinite;
+            color: var(--accent-cian);
+            font-weight: bold;
+            margin-left: 2px;
+        }
+
+        /* --- TARJETA DE LOGIN DERECHA --- */
+        .tarjeta-login {
+            width: 420px;
+            background-color: var(--bg-tarjeta);
+            padding: 48px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        /* --- CABECERA --- */
+        .cabecera {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo-container {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 10px;
+        }
+
+        .logo-icono {
+            font-size: 1.8rem;
+            animation: flotar 3s ease-in-out infinite;
+        }
+
+        .logo-texto {
+            font-size: 2.2rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            color: #fff;
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+
+        .subtitulo {
+            color: var(--text-secundario);
+            font-size: 0.95rem;
+            font-weight: 500;
+        }
+
+        /* --- BOTÓN GOOGLE MINIMALISTA --- */
+        .btn-google {
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.06);
+            border: 1px solid var(--border-color);
+            color: var(--text-principal);
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.2s ease;
+            margin-bottom: 24px;
+        }
+
+        .btn-google:hover {
+            background-color: rgba(255, 255, 255, 0.12);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .btn-google img {
+            width: 20px;
+            height: 20px;
+        }
+
+        /* --- SEPARADOR --- */
+        .separador {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-bottom: 24px;
+        }
+
+        .separador::before, .separador::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .separador:not(:empty)::before { margin-right: 16px; }
+        .separador:not(:empty)::after { margin-left: 16px; }
+
+        /* --- ENTRADAS DE FORMULARIO --- */
+        .campo-formulario {
+            text-align: left;
+            margin-bottom: 18px;
+        }
+
+        .campo-formulario label {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--text-secundario);
+            font-weight: 600;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        .campo-formulario input {
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.4);
+            border: 1px solid var(--border-color);
+            color: #fff;
+            padding: 14px 16px;
+            border-radius: 10px;
+            outline: none;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+        }
+
+        .campo-formulario input:focus {
+            border-color: var(--accent-cian);
+            background-color: rgba(0, 0, 0, 0.6);
+            box-shadow: 0 0 0 4px var(--accent-cian-glow);
+        }
+
+        /* --- BOTÓN ACCIÓN PRINCIPAL --- */
+        .btn-enviar {
+            width: 100%;
+            background-color: var(--text-principal);
+            color: #0f172a;
+            border: none;
+            padding: 14px;
+            border-radius: 10px;
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 6px;
+        }
+
+        .btn-enviar:hover {
+            background-color: #fff;
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
+        }
+
+        /* --- ENLACES --- */
+        .footer-links {
+            margin-top: 24px;
+            font-size: 0.85rem;
+            color: var(--text-secundario);
+            text-align: center;
+        }
+
+        .footer-links a {
+            color: var(--accent-cian);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s;
+            margin-left: 4px;
+        }
+
+        .footer-links a:hover {
+            color: #fff;
+            text-decoration: underline;
+        }
+
+        /* --- ERRORES --- */
+        .alerta-error {
+            background-color: rgba(248, 113, 113, 0.1);
+            border: 1px solid rgba(248, 113, 113, 0.3);
+            color: var(--accent-error);
+            padding: 12px 16px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            margin-bottom: 20px;
+            display: none;
+            text-align: left;
+            line-height: 1.4;
+        }
+
+        /* --- CONFIGURACIÓN RESPONSIVA (MÓVILES) --- */
+        @media (max-width: 850px) {
+            .wrapper-principal {
+                flex-direction: column;
+                max-width: 440px;
+            }
+            .panel-features {
+                border-right: none;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+                padding: 32px;
+            }
+            .tarjeta-login {
+                width: 100%;
+                padding: 40px 32px;
+            }
+        }
+
+        /* --- ANIMACIONES --- */
+        @keyframes movimientoArcoiris {
+            0% { background-position: 0% 82%; }
+            50% { background-position: 100% 19%; }
+            100% { background-position: 0% 82%; }
+        }
+
+        @keyframes flotar {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-4px); }
+        }
+
+        @keyframes parpadeoCursor {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="wrapper-principal">
+        
+        <aside class="panel-features">
+            
+            <div class="feature-item">
+                <img src="classroom.avif" alt="Privacidad" class="feature-imagen">
+                <div class="feature-texto-box">
+                    <p id="textoFeature1" class="feature-texto cursor-tipeo"></p>
+                </div>
+            </div>
+
+            <div class="feature-item">
+                <img src="5765297.png" alt="Infinito" class="feature-imagen">
+                <div class="feature-texto-box">
+                    <p id="textoFeature2" class="feature-texto cursor-tipeo"></p>
+                </div>
+            </div>
+
+        </aside>
+
+        <main class="tarjeta-login">
+            <header class="cabecera">
+                <div class="logo-container">
+                    <span class="logo-icono">⚡</span>
+                    <span class="logo-texto">SuperDocs</span>
+                </div>
+                <p class="subtitulo">Redacción avanzada e inteligente</p>
+            </header>
+
+            <div id="cajaError" class="alerta-error"></div>
+
+            <button id="btnGoogle" class="btn-google">
+                <img src="https://fonts.gstatic.com/s/i/productlogos/googleg/v6/web-24dp/copy_of_24dp.png" alt="Google">
+                Continuar con Google
+            </button>
+
+            <div class="separador">o usa tus credenciales</div>
+
+            <form id="formularioAuth" onsubmit="procesarAutenticacion(event)">
+                <div class="campo-formulario">
+                    <label for="correo">Correo electrónico</label>
+                    <input type="email" id="correo" required placeholder="nombre@ejemplo.com" autocomplete="email">
+                </div>
+
+                <div class="campo-formulario">
+                    <label for="password">Contraseña</label>
+                    <input type="password" id="password" required placeholder="••••••••" autocomplete="current-password">
+                </div>
+
+                <button type="submit" id="btnFormulario" class="btn-enviar">Iniciar Sesión</button>
+            </form>
+
+            <footer class="footer-links">
+                <span id="textoCambio">¿Eres nuevo por aquí?</span> 
+                <a href="#" id="enlaceCambio" onclick="conmutarModoRegistro(event)">Crea una cuenta</a>
+            </footer>
+        </main>
+
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
+        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-analytics.js";
+        import { 
+            getAuth, 
+            signInWithPopup, 
+            GoogleAuthProvider,
+            signInWithEmailAndPassword,
+            createUserWithEmailAndPassword
+        } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyDJw_sL9YLe2WbUMf6j5MDTEdHhqvy1u7s",
+            authDomain: "superdocs2026.firebaseapp.com",
+            projectId: "superdocs2026",
+            storageBucket: "superdocs2026.firebasestorage.app",
+            messagingSenderId: "517642206953",
+            appId: "1:517642206953:web:f732ae4dc855feb3aafa78",
+            measurementId: "G-KN295LVLHK"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const analytics = getAnalytics(app);
+        const auth = getAuth(app);
+        const proveedorGoogle = new GoogleAuthProvider();
+
+        let esModoLogin = true;
+
+        const cajaError = document.getElementById("cajaError");
+        const btnFormulario = document.getElementById("btnFormulario");
+        const textoCambio = document.getElementById("textoCambio");
+        const enlaceCambio = document.getElementById("enlaceCambio");
+
+        // --- ANIMACIÓN SIMULTÁNEA DE MÁQUINA DE ESCRIBIR ---
+        const textosEscribir = [
+            { id: "textoFeature1", contenido: "Escribe y guarda tus documentos, nadie puede verlos. Puedes compartirlos a alguien si deseas." },
+            { id: "textoFeature2", contenido: "Puedes tener documentos infinitos, y escribir muchísimo." }
+        ];
+
+        function ejecutarEfectoTipeo() {
+            textosEscribir.forEach(item => {
+                let elemento = document.getElementById(item.id);
+                let cadenaTexto = item.contenido;
+                let index = 0;
+
+                function escribirLetra() {
+                    if (index < cadenaTexto.length) {
+                        elemento.innerText += cadenaTexto.charAt(index);
+                        index++;
+                        setTimeout(escribirLetra, 25); // Velocidad milisegundos entre letras
+                    } else {
+                        // Remover cursor de tipear al finalizar la frase
+                        elemento.classList.remove("cursor-tipeo");
+                    }
+                }
+                escribirLetra();
+            });
+        }
+
+        // Ejecutar animación de texto al cargar la interfaz
+        window.addEventListener("DOMContentLoaded", ejecutarEfectoTipeo);
+
+        // --- SISTEMA POPUP GOOGLE ---
+        document.getElementById("btnGoogle").addEventListener("click", () => {
+            cajaError.style.display = "none";
+            signInWithPopup(auth, proveedorGoogle)
+                .then(() => { window.location.href = "home.html"; })
+                .catch((error) => {
+                    if(error.code !== 'auth/popup-closed-by-user') {
+                        mostrarError("No pudimos conectar con Google. Revisa tu red.");
+                    }
+                });
+        });
+
+        // --- INTERCAMBIO DE MODOS ---
+        window.conmutarModoRegistro = function(evento) {
+            evento.preventDefault();
+            cajaError.style.display = "none";
+            esModoLogin = !esModoLogin;
+
+            if (esModoLogin) {
+                btnFormulario.innerText = "Iniciar Sesión";
+                textoCambio.innerText = "¿Eres nuevo por aquí?";
+                enlaceCambio.innerText = "Crea una cuenta";
+            } else {
+                btnFormulario.innerText = "Registrar Cuenta";
+                textoCambio.innerText = "¿Ya tienes cuenta?";
+                enlaceCambio.innerText = "Inicia sesión aquí";
+            }
+        }
+
+        // --- AUTENTICACIÓN FORMULARIO ---
+        window.procesarAutenticacion = function(evento) {
+            evento.preventDefault();
+            cajaError.style.display = "none";
+
+            const email = document.getElementById("correo").value;
+            const password = document.getElementById("password").value;
+
+            if (esModoLogin) {
+                signInWithEmailAndPassword(auth, email, password)
+                    .then(() => { window.location.href = "home.html"; })
+                    .catch((error) => { manejarErroresFirebase(error.code); });
+            } else {
+                createUserWithEmailAndPassword(auth, email, password)
+                    .then(() => { window.location.href = "home.html"; })
+                    .catch((error) => { manejarErroresFirebase(error.code); });
+            }
+        }
+
+        function manejarErroresFirebase(codigo) {
+            switch (codigo) {
+                case 'auth/invalid-credential':
+                    mostrarError("Email o contraseña inválidos. Asegúrate de haber escrito todo bien.");
+                    break;
+                case 'auth/weak-password':
+                    mostrarError("Seguridad baja. La contraseña debe poseer al menos 6 caracteres.");
+                    break;
+                case 'auth/email-already-in-use':
+                    mostrarError("Este correo electrónico ya se encuentra vinculado a otra cuenta.");
+                    break;
+                case 'auth/invalid-email':
+                    mostrarError("El formato del correo ingresado no es válido.");
+                    break;
+                default:
+                    mostrarError("No pudimos procesar tu solicitud ahora. Inténtalo más tarde.");
+                    console.error(codigo);
+            }
+        }
+
+        function mostrarError(mensaje) {
+            cajaError.innerText = mensaje;
+            cajaError.style.display = "block";
+        }
+    </script>
+</body>
+</html>
