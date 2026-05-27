@@ -4,8 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SuperDocs — Acceso Seguro</title>
+
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="shortcut icon" href="favicon-32x32.png" type="image/x-icon">
+    <link rel="apple-touch-icon" href="favicon-32x32.png">
+
     <style>
-        /* --- VARIABLES DE DISEÑO PREMIUM --- */
         :root {
             --bg-tarjeta: rgba(10, 15, 30, 0.75);
             --border-color: rgba(255, 255, 255, 0.12);
@@ -25,7 +29,6 @@
             -webkit-font-smoothing: antialiased;
         }
 
-        /* --- FONDO ARCOÍRIS ANIMADO EN LOOP --- */
         body {
             background: linear-gradient(124deg, #ff2400, #e81d1d, #e8b71d, #1de840, #1ddde8, #2b1de8, #dd1de8, #ff2400);
             background-size: 1600% 1600%;
@@ -39,7 +42,6 @@
             position: relative;
         }
 
-        /* Capa oscura sutil para suavizar el arcoíris y proteger la vista */
         body::before {
             content: '';
             position: absolute;
@@ -52,7 +54,6 @@
             pointer-events: none;
         }
 
-        /* --- CONTENEDOR PRINCIPAL SPLIT --- */
         .wrapper-principal {
             position: relative;
             z-index: 2;
@@ -68,7 +69,6 @@
             box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.8);
         }
 
-        /* --- PANAL LATERAL IZQUIERDO (FEATURES) --- */
         .panel-features {
             flex: 1;
             background-color: rgba(10, 15, 30, 0.4);
@@ -106,10 +106,9 @@
             line-height: 1.5;
             color: var(--text-principal);
             font-weight: 500;
-            min-height: 48px; /* Previene saltos de layout mientras se escribe */
+            min-height: 48px;
         }
 
-        /* Cursor parpadeante de escritura */
         .cursor-tipeo::after {
             content: '|';
             animation: parpadeoCursor 0.8s infinite;
@@ -118,7 +117,6 @@
             margin-left: 2px;
         }
 
-        /* --- TARJETA DE LOGIN DERECHA --- */
         .tarjeta-login {
             width: 420px;
             background-color: var(--bg-tarjeta);
@@ -128,7 +126,6 @@
             justify-content: center;
         }
 
-        /* --- CABECERA --- */
         .cabecera {
             text-align: center;
             margin-bottom: 30px;
@@ -160,7 +157,6 @@
             font-weight: 500;
         }
 
-        /* --- BOTÓN GOOGLE MINIMALISTA --- */
         .btn-google {
             width: 100%;
             background-color: rgba(255, 255, 255, 0.06);
@@ -189,7 +185,6 @@
             height: 20px;
         }
 
-        /* --- SEPARADOR --- */
         .separador {
             display: flex;
             align-items: center;
@@ -211,7 +206,6 @@
         .separador:not(:empty)::before { margin-right: 16px; }
         .separador:not(:empty)::after { margin-left: 16px; }
 
-        /* --- ENTRADAS DE FORMULARIO --- */
         .campo-formulario {
             text-align: left;
             margin-bottom: 18px;
@@ -244,7 +238,6 @@
             box-shadow: 0 0 0 4px var(--accent-cian-glow);
         }
 
-        /* --- BOTÓN ACCIÓN PRINCIPAL --- */
         .btn-enviar {
             width: 100%;
             background-color: var(--text-principal);
@@ -264,7 +257,6 @@
             box-shadow: 0 0 20px rgba(255, 255, 255, 0.3);
         }
 
-        /* --- ENLACES --- */
         .footer-links {
             margin-top: 24px;
             font-size: 0.85rem;
@@ -285,7 +277,6 @@
             text-decoration: underline;
         }
 
-        /* --- ERRORES --- */
         .alerta-error {
             background-color: rgba(248, 113, 113, 0.1);
             border: 1px solid rgba(248, 113, 113, 0.3);
@@ -299,7 +290,6 @@
             line-height: 1.4;
         }
 
-        /* --- CONFIGURACIÓN RESPONSIVA (MÓVILES) --- */
         @media (max-width: 850px) {
             .wrapper-principal {
                 flex-direction: column;
@@ -316,7 +306,6 @@
             }
         }
 
-        /* --- ANIMACIONES --- */
         @keyframes movimientoArcoiris {
             0% { background-position: 0% 82%; }
             50% { background-position: 100% 19%; }
@@ -337,9 +326,7 @@
 <body>
 
     <div class="wrapper-principal">
-        
         <aside class="panel-features">
-            
             <div class="feature-item">
                 <img src="classroom.avif" alt="Privacidad" class="feature-imagen">
                 <div class="feature-texto-box">
@@ -353,7 +340,6 @@
                     <p id="textoFeature2" class="feature-texto cursor-tipeo"></p>
                 </div>
             </div>
-
         </aside>
 
         <main class="tarjeta-login">
@@ -393,7 +379,6 @@
                 <a href="#" id="enlaceCambio" onclick="conmutarModoRegistro(event)">Crea una cuenta</a>
             </footer>
         </main>
-
     </div>
 
     <script type="module">
@@ -429,7 +414,6 @@
         const textoCambio = document.getElementById("textoCambio");
         const enlaceCambio = document.getElementById("enlaceCambio");
 
-        // --- ANIMACIÓN SIMULTÁNEA DE MÁQUINA DE ESCRIBIR ---
         const textosEscribir = [
             { id: "textoFeature1", contenido: "Escribe y guarda tus documentos, nadie puede verlos. Puedes compartirlos a alguien si deseas." },
             { id: "textoFeature2", contenido: "Puedes tener documentos infinitos, y escribir muchísimo." }
@@ -445,9 +429,8 @@
                     if (index < cadenaTexto.length) {
                         elemento.innerText += cadenaTexto.charAt(index);
                         index++;
-                        setTimeout(escribirLetra, 25); // Velocidad milisegundos entre letras
+                        setTimeout(escribirLetra, 25);
                     } else {
-                        // Remover cursor de tipear al finalizar la frase
                         elemento.classList.remove("cursor-tipeo");
                     }
                 }
@@ -455,10 +438,8 @@
             });
         }
 
-        // Ejecutar animación de texto al cargar la interfaz
         window.addEventListener("DOMContentLoaded", ejecutarEfectoTipeo);
 
-        // --- SISTEMA POPUP GOOGLE ---
         document.getElementById("btnGoogle").addEventListener("click", () => {
             cajaError.style.display = "none";
             signInWithPopup(auth, proveedorGoogle)
@@ -470,7 +451,6 @@
                 });
         });
 
-        // --- INTERCAMBIO DE MODOS ---
         window.conmutarModoRegistro = function(evento) {
             evento.preventDefault();
             cajaError.style.display = "none";
@@ -487,7 +467,6 @@
             }
         }
 
-        // --- AUTENTICACIÓN FORMULARIO ---
         window.procesarAutenticacion = function(evento) {
             evento.preventDefault();
             cajaError.style.display = "none";
