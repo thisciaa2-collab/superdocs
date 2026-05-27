@@ -5,7 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SuperDocs — Cargando...</title>
     
-    <!-- Estilo mínimo por si la conexión es muy lenta, para que se vea limpio -->
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="shortcut icon" href="favicon-32x32.png" type="image/x-icon">
+    <link rel="apple-touch-icon" href="favicon-32x32.png">
+    
     <style>
         body {
             background-color: #05070f;
@@ -24,17 +27,14 @@
         }
     </style>
 
-    <!-- LÓGICA DE REDIRECCIÓN EN JAVASCRIPT -->
     <script>
-        // Forzamos la redirección inmediata a la pantalla de login
+        // Redirección instantánea sin romper el botón "Atrás" del navegador
         window.location.replace("/login");
     </script>
 </head>
 <body>
-
     <div class="loader">
         <p>Iniciando SuperDocs...</p>
     </div>
-
 </body>
 </html>
