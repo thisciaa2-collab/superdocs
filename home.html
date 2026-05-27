@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚡ SuperDocs — Panel de Escritura</title>
+
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="shortcut icon" href="favicon-32x32.png" type="image/x-icon">
+    <link rel="apple-touch-icon" href="favicon-32x32.png">
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="logo">⚡ <span>SuperDocs</span></div>
+            
+            <div class="menu-usuario">
+                <div class="usuario-avatar" id="userAvatar">👤</div>
+                <div class="usuario-info">
+                    <div class="usuario-nombre" id="userNombre">Cargando...</div>
+                    <div class="usuario-correo" id="userCorreo">correo@ejemplo.com</div>
+                </div>
+            </div>
+
+            <div class="grupo-control">
+                <label>Navegación</label>
+                <button onclick="window.location.href='createdocument.html'"><span class="icon">➕</span> Crear archivo</button>
+                <button onclick="window.location.href='history.html'"><span class="icon">📜</span> Historial de archivos</button>
+                <button onclick="window.location.href='addfriend.html'"><span class="icon">👥</span> Añadir amigos</button>
+                <button onclick="window.location.href='windowsapp.html'"><span class="icon">🪟</span> Descarga nuestra app</button>
+                <button id="btnEnfoque" onclick="conmutarModoEnfoque()"><span class="icon">🤫</span> Modo Enfoque</button>
+            </div>
+
+            <div class="grupo-control">
+                <label>Formato de Texto</label>
+                <button onclick="ejecutarComando('bold')"><b>B</b> Negrita</button>
+                <button onclick="ejecutarComando('italic')"><i>I</i> Itálica</button>
+                <button onclick="insertarBloqueCodigo()" class="btn-codigo">{" "} Bloque Código</button>
+            </div>
+
+            <div class="grupo-control">
+                <button onclick="cerrarSesion()" class="btn-logout">🚪 Cerrar Sesión</button>
+            </div>
+
+            <div class="estadisticas">
+                <div class="stat-item">Palabras: <span id="valPalabras">0</span></div>
+                <div class="stat-item">Tiempo lectura: <span id="valTiempo">0s</span></div>
+                <div class="guardado-estado">✓ Guardado en tu cuenta</div>
+            </div>
+        </aside>
+
+        <main class="zona-editor">
+            <div class="contenedor-hoja">
+                <input type="text" id="tituloDocumento" class="input-titulo" placeholder="Documento sin título..." value="Mi Gran Proyecto">
+                <div id="editorTexto" class="editor-hoja" contenteditable="true" placeholder="Empieza a escribir tu magia aquí..."></div>
+            </div>
+        </main>
+    </div>
+
+    <button class="btn-flotante-enfoque" onclick="conmutarModoEnfoque()">👁️ Salir Enfoque</button>
+
+    <script type="module" src="script.js"></script>
+</body>
+</html>
