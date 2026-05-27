@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>⚡ SuperDocs — Iniciar Sesión desde la App</title>
+    
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+
+    <style>
+        :root {
+            --bg-principal: #05070f;
+            --bg-tarjeta: rgba(15, 23, 42, 0.6);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --text-principal: #f8fafc;
+            --text-secundario: #94a3b8;
+            --accent-cian: #38bdf8;
+            --accent-cian-glow: rgba(56, 189, 248, 0.25);
+            --accent-morado: #a78bfa;
+            --accent-rojo: #f87171;
+            --fuente: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: var(--fuente);
+            -webkit-font-smoothing: antialiased;
+        }
+
+        body {
+            background-color: var(--bg-principal);
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(167, 139, 250, 0.05) 0px, transparent 50%),
+                radial-gradient(at 100% 100%, rgba(56, 189, 248, 0.05) 0px, transparent 50%);
+            color: var(--text-principal);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+
+        .login-container {
+            width: 100%;
+            max-width: 420px;
+            padding: 40px;
+            background: var(--bg-tarjeta);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 2rem;
+            font-weight: 800;
+            color: #fff;
+            letter-spacing: -0.5px;
+            margin-bottom: 8px;
+        }
+
+        .logo span {
+            color: var(--accent-cian);
+        }
+
+        .subtitulo {
+            font-size: 0.95rem;
+            color: var(--text-secundario);
+            margin-bottom: 32px;
+        }
+
+        .grupo-input {
+            text-align: left;
+            margin-bottom: 20px;
+        }
+
+        .grupo-input label {
+            display: block;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: var(--text-secundario);
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .grupo-input input {
+            width: 100%;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid var(--border-color);
+            color: #fff;
+            padding: 12px 16px;
+            border-radius: 12px;
+            outline: none;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+        }
+
+        .grupo-input input:focus {
+            border-color: var(--accent-cian);
+            box-shadow: 0 0 10px var(--accent-cian-glow);
+        }
+
+        .btn-entrar {
+            width: 100%;
+            background: #fff;
+            color: var(--bg-principal);
+            border: none;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            margin-top: 10px;
+        }
+
+        .btn-entrar:hover {
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .divisor {
+            margin: 24px 0;
+            display: flex;
+            align-items: center;
+            text-align: center;
+            font-size: 0.75rem;
+            color: var(--text-secundario);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .divisor::before, .divisor::after {
+            content: '';
+            flex: 1;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .divisor:not(:empty)::before { margin-right: .5em; }
+        .divisor:not(:empty)::after { margin-left: .5em; }
+
+        .btn-google {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            color: #fff;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-google:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: var(--accent-morado);
+            box-shadow: 0 0 12px rgba(167, 139, 250, 0.2);
+        }
+
+        .btn-google img {
+            width: 18px;
+            height: 18px;
+        }
+
+        .alert-error {
+            background: rgba(248, 113, 113, 0.1);
+            border: 1px solid var(--accent-rojo);
+            color: var(--accent-rojo);
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            margin-bottom: 20px;
+            display: none;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-container">
+        <div class="logo">⚡ <span>SuperDocs</span></div>
+        <div class="subtitulo">Acceso exclusivo App de Windows</div>
+
+        <div id="cajaError" class="alert-error"></div>
+
+        <form id="formularioLogin" onsubmit="iniciarSesionEmail(event)">
+            <div class="grupo-input">
+                <label>Correo Electrónico</label>
+                <input type="email" id="inputEmail" placeholder="tu@correo.com" required>
+            </div>
+            <div class="grupo-input">
+                <label>Contraseña</label>
+                <input type="password" id="inputPassword" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="btn-entrar">Ingresar al Panel</button>
+        </form>
+
+        <div class="divisor">o continúa con</div>
+
+        <button class="btn-google" onclick="iniciarSesionGoogle()">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_\" target="_blank\"Logo.svg" alt="Google">
+            Cuenta de Google
+        </button>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
+        import { 
+            getAuth, 
+            signInWithEmailAndPassword, 
+            GoogleAuthProvider, 
+            signInWithRedirect, 
+            getRedirectResult 
+        } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
+
+        // Tu configuración oficial de Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyDJw_sL9YLe2WbUMf6j5MDTEdHhqvy1u7s",
+            authDomain: "superdocs2026.firebaseapp.com",
+            projectId: "superdocs2026",
+            storageBucket: "superdocs2026.firebasestorage.app",
+            messagingSenderId: "517642206953",
+            appId: "1:517642206953:web:f732ae4dc855feb3aafa78",
+            measurementId: "G-KN295LVLHK"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const proveedorGoogle = new GoogleAuthProvider();
+
+        const cajaError = document.getElementById("cajaError");
+
+        // Capturar el resultado del redireccionamiento de Google al recargar la página dentro de la app
+        getRedirectResult(auth)
+            .then((result) => {
+                if (result?.user) {
+                    window.location.href = "home.html";
+                }
+            })
+            .catch((error) => {
+                mostrarError("Error en autenticación con Google: " + error.message);
+            });
+
+        // 1. Método Correo/Contraseña (100% nativo y seguro en Windows)
+        window.iniciarSesionEmail = function(event) {
+            event.preventDefault();
+            cajaError.style.display = "none";
+
+            const email = document.getElementById("inputEmail").value;
+            const password = document.getElementById("inputPassword").value;
+
+            signInWithEmailAndPassword(auth, email, password)
+                .then((userCredential) => {
+                    window.location.href = "home.html";
+                })
+                .catch((error) => {
+                    if (error.code === 'auth/invalid-credential') {
+                        mostrarError("⚠️ El correo o la contraseña son incorrectos.");
+                    } else {
+                        mostrarError("⚠️ Error: " + error.message);
+                    }
+                });
+        }
+
+        // 2. Método Google con REDIRECT (Evita el bloqueo de WebView2)
+        window.iniciarSesionGoogle = function() {
+            cajaError.style.display = "none";
+            signInWithRedirect(auth, proveedorGoogle);
+        }
+
+        function mostrarError(mensaje) {
+            cajaError.innerText = mensaje;
+            cajaError.style.display = "block";
+        }
+    </script>
+</body>
+</html>
