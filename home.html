@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚡ SuperDocs — Panel de Escritura</title>
+    <title>⚡ SuperDocs — Inicio</title>
 
+    <!-- Configuración del Favicon -->
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
     <link rel="shortcut icon" href="favicon-32x32.png" type="image/x-icon">
     <link rel="apple-touch-icon" href="favicon-32x32.png">
@@ -14,9 +15,11 @@
 <body>
 
     <div class="app-container">
+        <!-- BARRA LATERAL CON MENÚ DE USUARIO -->
         <aside class="sidebar">
             <div class="logo">⚡ <span>SuperDocs</span></div>
             
+            <!-- Componente de Perfil de Usuario -->
             <div class="menu-usuario">
                 <div class="usuario-avatar" id="userAvatar">👤</div>
                 <div class="usuario-info">
@@ -25,43 +28,69 @@
                 </div>
             </div>
 
+            <!-- Los 5 Botones de Navegación del Menú -->
             <div class="grupo-control">
                 <label>Navegación</label>
                 <button onclick="window.location.href='createdocument.html'"><span class="icon">➕</span> Crear archivo</button>
                 <button onclick="window.location.href='history.html'"><span class="icon">📜</span> Historial de archivos</button>
                 <button onclick="window.location.href='addfriend.html'"><span class="icon">👥</span> Añadir amigos</button>
                 <button onclick="window.location.href='windowsapp.html'"><span class="icon">🪟</span> Descarga nuestra app</button>
-                <button id="btnEnfoque" onclick="conmutarModoEnfoque()"><span class="icon">🤫</span> Modo Enfoque</button>
             </div>
 
+            <!-- Gestión de Cuenta -->
             <div class="grupo-control">
-                <label>Formato de Texto</label>
-                <button onclick="ejecutarComando('bold')"><b>B</b> Negrita</button>
-                <button onclick="ejecutarComando('italic')"><i>I</i> Itálica</button>
-                <button onclick="insertarBloqueCodigo()" class="btn-codigo">{" "} Bloque Código</button>
-            </div>
-
-            <div class="grupo-control">
+                <label>Cuenta</label>
                 <button onclick="cerrarSesion()" class="btn-logout">🚪 Cerrar Sesión</button>
-            </div>
-
-            <div class="estadisticas">
-                <div class="stat-item">Palabras: <span id="valPalabras">0</span></div>
-                <div class="stat-item">Tiempo lectura: <span id="valTiempo">0s</span></div>
-                <div class="guardado-estado">✓ Guardado en tu cuenta</div>
             </div>
         </aside>
 
+        <!-- LIENZO CENTRAL: BIENVENIDA -->
         <main class="zona-editor">
-            <div class="contenedor-hoja">
-                <input type="text" id="tituloDocumento" class="input-titulo" placeholder="Documento sin título..." value="Mi Gran Proyecto">
-                <div id="editorTexto" class="editor-hoja" contenteditable="true" placeholder="Empieza a escribir tu magia aquí..."></div>
+            <div class="contenedor-bienvenida">
+                <h1>¡Hola de nuevo! 👋</h1>
+                <p>Bienvenido a tu panel de control de SuperDocs. Usa el menú de la izquierda para navegar, revisar tus archivos o redactar un nuevo manuscrito protegido por cifrado.</p>
+                <button class="btn-accion-principal" onclick="window.location.href='createdocument.html'">➕ Redactar un nuevo archivo</button>
             </div>
         </main>
     </div>
 
-    <button class="btn-flotante-enfoque" onclick="conmutarModoEnfoque()">👁️ Salir Enfoque</button>
+    <!-- Script de control de Home -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
 
-    <script type="module" src="script.js"></script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDJw_sL9YLe2WbUMf6j5MDTEdHhqvy1u7s",
+            authDomain: "superdocs2026.firebaseapp.com",
+            projectId: "superdocs2026",
+            storageBucket: "superdocs2026.firebasestorage.app",
+            messagingSenderId: "517642206953",
+            appId: "1:517642206953:web:f732ae4dc855feb3aafa78",
+            measurementId: "G-KN295LVLHK"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+
+        const userNombre = document.getElementById("userNombre");
+        const userCorreo = document.getElementById("userCorreo");
+        const userAvatar = document.getElementById("userAvatar");
+
+        onAuthStateChanged(auth, (usuario) => {
+            if (usuario) {
+                userCorreo.innerText = usuario.email;
+                userNombre.innerText = usuario.displayName ? usuario.displayName : "Usuario de SuperDocs";
+                if (usuario.photoURL) {
+                    userAvatar.innerHTML = `<img src="${usuario.photoURL}" alt="Avatar">`;
+                }
+            } else {
+                window.location.href = "login.html";
+            }
+        });
+
+        window.cerrarSesion = function() {
+            signOut(auth).then(() => { window.location.href = "login.html"; });
+        }
+    </script>
 </body>
 </html>
