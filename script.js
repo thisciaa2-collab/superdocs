@@ -1,41 +1,30 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
-import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
+import { getAuth, signInWithCustomToken, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyDJw_sL9YLe2WbUMf6j5MDTEdHhqvy1u7s",
-  authDomain: "superdocs2026.firebaseapp.com",
-  projectId: "superdocs2026",
-  storageBucket: "superdocs2026.firebasestorage.app",
-  messagingSenderId: "517642206953",
-  appId: "1:517642206953:web:f732ae4dc855feb3aafa78",
-  measurementId: "G-KN295LVLHK"
+// ... tu firebaseConfig ...
+const auth = getAuth(initializeApp(firebaseConfig));
+
+// 1. ESTO ES LO QUE HACE QUE LA SESIÓN NO SE PIERDA
+window.rehidratarSesion = async (token) => {
+    try {
+        await signInWithCustomToken(auth, token);
+        window.location.href = "home.html";
+    } catch (e) { console.error("Error al recuperar sesión", e); }
 };
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
 
-// Lógica de Redirección y Puente
-onAuthStateChanged(auth, (usuario) => {
-    const ruta = window.location.pathname;
-
-    if (usuario) {
-        // Si está logueado y está en login, saltar al home
-        if (ruta.includes("logininapp")) {
-            window.location.href = "home.html";
-        }
-    } else {
-        // Si no está logueado y está en home, volver al login
-        if (ruta.includes("home.html")) {
-            window.location.href = "logininapp";
-        }
+// 2. Al loguearte normal (Google/Email), guardamos el token
+export function onLoginExitoso(user) {
+    if (window.chrome && window.chrome.webview) {
+        // Guardamos el token en Windows
+        window.chrome.webview.postMessage("TOKEN:" + user.refreshToken);
     }
-});
+    window.location.href = "home.html";
+}
 
-// Función de salida
-window.cerrarSesion = function() {
+// 3. Logout
+window.cerrarSesion = () => {
     signOut(auth).then(() => {
-        if (window.chrome && window.chrome.webview) {
-            window.chrome.webview.postMessage("CERRAR_SESION");
-        }
+        if (window.chrome && window.chrome.webview) window.chrome.webview.postMessage("LOGOUT");
         window.location.href = "logininapp";
     });
 };
