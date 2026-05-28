@@ -89,8 +89,11 @@
         let usuarioActual = null;
 
         onAuthStateChanged(auth, (user) => {
-            if (user) { usuarioActual = user; } 
-            else { window.location.href = "logininapp"; }
+            if (user) { 
+                usuarioActual = user; 
+            } else { 
+                window.location.href = "logininapp"; 
+            }
         });
 
         window.enviarSolicitud = async () => {
@@ -123,7 +126,9 @@
                 alert(`¡Solicitud enviada de forma segura a ${nombre}!`);
                 document.getElementById("friend-name").value = "";
                 document.getElementById("friend-email").value = "";
-            } catch (err) { console.error(err); }
+            } catch (err) { 
+                console.error(err); 
+            }
         };
     </script>
 </body>
