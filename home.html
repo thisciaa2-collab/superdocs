@@ -1,242 +1,103 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SuperDoc Pro - Workspace</title>
-    <link rel="icon" type="image/png" href="favicon36x36.png" sizes="36x36">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
-        :root {
-            --bg-dark: #070a13;
-            --bg-card: #0f1424;
-            --sidebar-bg: #0b0e1a;
-            --accent-primary: #6366f1;
-            --accent-glow: rgba(99, 102, 241, 0.15);
-            --text-main: #f1f5f9;
-            --text-muted: #64748b;
-            --border: rgba(255, 255, 255, 0.05);
-            --success: #10b981;
-            --warning: #f59e0b;
-        }
+<script>
+    let archivosLocalesCargados = [];
 
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background: var(--bg-dark); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
-        body.is-desktop { background: radial-gradient(circle at top right, #14112e, var(--bg-dark)); }
+    function switchView(viewId) {
+        document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
+        const target = document.getElementById(viewId);
+        if(target) target.classList.add('active');
+    }
 
-        aside { width: 280px; background: var(--sidebar-bg); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 30px 20px; }
-        .brand { display: flex; align-items: center; gap: 12px; margin-bottom: 40px; }
-        .brand i { font-size: 24px; color: var(--accent-primary); }
-        .brand h2 { font-size: 20px; font-weight: 700; letter-spacing: 0.5px; }
-        
-        nav { display: flex; flex-direction: column; gap: 8px; flex-grow: 1; overflow-y: auto; }
-        .nav-btn { display: flex; align-items: center; gap: 14px; padding: 14px 18px; color: var(--text-muted); border-radius: 12px; cursor: pointer; transition: all 0.2s ease; font-weight: 500; text-decoration: none; user-select: none; }
-        .nav-btn:hover { color: var(--text-main); background: rgba(255,255,255,0.02); }
-        .nav-btn.active { color: var(--text-main); background: var(--accent-primary); box-shadow: 0 4px 20px var(--accent-glow); }
+    function toggleSubmenu(id) {
+        const sub = document.getElementById(id);
+        sub.style.maxHeight = (sub.style.maxHeight === "0px" || !sub.style.maxHeight) ? "200px" : "0px";
+    }
 
-        .folder-section-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; color: var(--text-muted); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; cursor: pointer; margin-top: 10px; user-select: none; }
-        .submenu-container { display: flex; flex-direction: column; gap: 4px; padding-left: 16px; overflow: hidden; transition: max-height 0.3s ease; }
-        .badge-app { background: rgba(16, 185, 129, 0.15); color: #34d399; font-size: 10px; padding: 2px 6px; border-radius: 6px; font-weight: 600; margin-left: auto; border: 1px solid rgba(16, 185, 129, 0.2); }
-
-        main { flex-grow: 1; padding: 40px; overflow-y: auto; display: flex; gap: 30px; }
-        .workspace-content { flex-grow: 1; }
-        .view-section { display: none; animation: fadeIn 0.3s ease forwards; }
-        .view-section.active { display: block; }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        h1 { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
-
-        .files-explorer-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-top: 20px; }
-        .file-card-item { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 20px; display: flex; flex-direction: column; gap: 12px; cursor: pointer; transition: all 0.2s; }
-        .file-card-item:hover { border-color: var(--accent-primary); transform: translateY(-2px); background: rgba(255,255,255,0.01); }
-        .file-card-item i { font-size: 32px; color: var(--accent-primary); }
-        .file-info-name { font-weight: 600; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .file-info-meta { color: var(--text-muted); font-size: 12px; }
-
-        .btn-action { background: var(--accent-primary); color: white; border: none; padding: 12px 24px; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 14px; display: inline-flex; align-items: center; gap: 10px; user-select: none; transition: all 0.2s; }
-        .btn-action:hover { opacity: 0.9; transform: translateY(-1px); }
-        .btn-action.btn-orange { background: var(--warning); color: #070a13; }
-
-        /* Panel Editor Lateral */
-        .editor-sidebar { width: 400px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; padding: 24px; display: none; flex-direction: column; gap: 16px; animation: fadeIn 0.3s ease; }
-        .editor-sidebar.active { display: flex; }
-        .editor-sidebar h2 { font-size: 18px; font-weight: 600; }
-        .editor-textarea { flex-grow: 1; background: var(--bg-dark); border: 1px solid var(--border); color: var(--text-main); padding: 16px; border-radius: 10px; resize: none; font-family: 'Courier New', Courier, monospace; font-size: 14px; line-height: 1.5; }
-        .editor-textarea:focus { border-color: var(--accent-primary); outline: none; }
-    </style>
-</head>
-<body>
-
-    <aside>
-        <div class="brand">
-            <i class="fa-solid fa-feather-pointed"></i>
-            <h2>SuperDoc Pro</h2>
-        </div>
-        <nav>
-            <div class="nav-btn active" onclick="switchView('home-view')"><i class="fa-solid fa-house"></i>Home</div>
-            <div class="folder-section-header" onclick="toggleSubmenu('foldersSubmenu')">
-                <div><i class="fa-solid fa-folder-tree"></i>Mis carpetas</div>
-                <i class="fa-solid fa-chevron-down" id="arrowIcon"></i>
-            </div>
-            <div class="submenu-container" id="foldersSubmenu">
-                <div class="nav-btn" onclick="switchView('computer-view')">
-                    <i class="fa-solid fa-desktop"></i>Computador <span class="badge-app" id="lbl-entorno">Chrome</span>
-                </div>
-            </div>
-        </nav>
-    </aside>
-
-    <main>
-        <div class="workspace-content">
-            <section id="home-view" class="view-section active">
-                <h1>Panel de Gestión</h1>
-                <p style="color: var(--text-muted);">Selecciona una sección en el menú izquierdo.</p>
-            </section>
-
-            <section id="computer-view" class="view-section">
-                <h1 id="title-folder">Almacenamiento Local</h1>
-                <p id="sub-folder" style="color: var(--text-muted); margin-bottom: 25px;">Sincroniza ficheros locales desde tu sistema.</p>
-                
-                <div style="margin-bottom: 25px; display: flex; gap: 12px; flex-wrap: wrap;">
-                    <button class="btn-action" onclick="vincularCarpetaLocalChrome()"><i class="fa-solid fa-folder-open"></i> Vincular carpeta</button>
-                    <button class="btn-action btn-orange" onclick="enviarSolicitudVinculacionWPF()"><i class="fa-solid fa-laptop-code"></i> Vincular PC</button>
-                    <button class="btn-action" id="btn-crear" onclick="crearNuevoArchivoVacio()" style="background: var(--success); display: none;"><i class="fa-solid fa-plus"></i> Crear Archivo</button>
-                </div>
-
-                <div class="files-explorer-grid" id="local-files-container">
-                    <p id="placeholder-msg" style="color: var(--text-muted); font-size: 14px;">Vincula un origen para ver, editar y añadir archivos locales.</p>
-                </div>
-            </section>
-        </div>
-
-        <div class="editor-sidebar" id="panel-editor">
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <h2 id="editor-filename">Editando archivo</h2>
-                <i class="fa-solid fa-xmark" style="cursor:pointer; color: var(--text-muted);" onclick="cerrarEditor()"></i>
-            </div>
-            <textarea class="editor-textarea" id="editor-content"></textarea>
-            <button class="btn-action" style="background: var(--success); justify-content: center;" onclick="mandarGuardadoAWPF()">
-                <i class="fa-solid fa-floppy-disk"></i> Guardar Cambios en PC
-            </button>
-        </div>
-    </main>
-
-    <script>
-        let archivoSeleccionadoActual = "";
-
-        function switchView(viewId) {
-            document.querySelectorAll('.view-section').forEach(s => s.classList.remove('active'));
-            const target = document.getElementById(viewId);
-            if(target) target.classList.add('active');
-        }
-
-        function toggleSubmenu(id) {
-            const sub = document.getElementById(id);
-            sub.style.maxHeight = (sub.style.maxHeight === "0px" || !sub.style.maxHeight) ? "200px" : "0px";
-        }
-
-        function enviarSolicitudVinculacionWPF() {
-            if (window.chrome?.webview) {
-                // Enviar objeto estructurado en JSON a C#
-                window.chrome.webview.postMessage({ action: "VINCULAR_PC_SOLICITUD" });
-            } else {
-                alert("La vinculación avanzada de PC requiere ejecutar la aplicación desde el contenedor WPF de Windows.");
-            }
-        }
-
-        // PROCESAR RESPUESTAS DEL NÚCLEO WINDOWS
+    // ENVÍO DE DATOS SEGURO EN TEXTO PLANO A C#
+    function enviarSolicitudVinculacionWPF() {
         if (window.chrome?.webview) {
-            window.chrome.webview.addEventListener('message', event => {
-                const datos = event.data;
-
-                if (datos.status === 'APROBADO_POR_WINDOWS') {
-                    document.getElementById('title-folder').innerText = "Carpeta Sincronizada";
-                    document.getElementById('sub-folder').innerText = `Ruta activa: ${datos.path}`;
-                    document.getElementById('btn-crear').style.display = "inline-flex";
-                    
-                    renderizarArchivosWPF(datos.files);
-                }
-                else if (datos.status === 'CONTENIDO_ARCHIVO') {
-                    abrirEditorTexto(datos.filename, datos.content);
-                }
-            });
+            // Enviamos un string directo para evitar problemas de parseo en C#
+            window.chrome.webview.postMessage("VINCULAR_PC_SOLICITUD");
+        } else {
+            alert("La vinculación avanzada requiere ejecutar la aplicación instalada en Windows.");
         }
+    }
 
-        function renderizarArchivosWPF(archivos) {
-            const container = document.getElementById('local-files-container');
-            container.innerHTML = '';
-            
-            if (archivos.length === 0) {
-                container.innerHTML = '<p style="color: var(--text-muted);">Esta carpeta está vacía. ¡Crea un archivo para empezar!</p>';
-                return;
-            }
-
-            archivos.forEach(file => {
-                const card = document.createElement('div');
-                card.className = 'file-card-item';
-                card.onclick = () => solicitarLecturaArchivoWPF(file.name);
-                card.innerHTML = `
-                    <i class="fa-solid fa-file-lines"></i>
-                    <div class="file-info-name" title="${file.name}">${file.name}</div>
-                    <div class="file-info-meta">${file.size} • En Disco</div>
-                `;
-                container.appendChild(card);
-            });
-        }
-
-        function solicitarLecturaArchivoWPF(nombre) {
-            if (window.chrome?.webview) {
-                window.chrome.webview.postMessage({ action: "LEER_ARCHIVO", filename: nombre });
-            }
-        }
-
-        function abrirEditorTexto(nombre, contenido) {
-            archivoSeleccionadoActual = nombre;
-            document.getElementById('editor-filename').innerText = nombre;
-            document.getElementById('editor-content').value = contenido;
-            document.getElementById('panel-editor').classList.add('active');
-        }
-
-        function mandarGuardadoAWPF() {
-            const nuevoContenido = document.getElementById('editor-content').value;
-            if (window.chrome?.webview && archivoSeleccionadoActual) {
-                window.chrome.webview.postMessage({
-                    action: "GUARDAR_ARCHIVO",
-                    filename: archivoSeleccionadoActual,
-                    content: nuevoContenido
-                });
-                cerrarEditor();
-            }
-        }
-
-        function crearNuevoArchivoVacio() {
-            const nombre = prompt("Nombre del archivo nuevo (ej: notas.txt):", "documento.txt");
-            if (!nombre) return;
-            if (window.chrome?.webview) {
-                window.chrome.webview.postMessage({
-                    action: "GUARDAR_ARCHIVO",
-                    filename: nombre,
-                    content: ""
-                });
-            }
-        }
-
-        function cerrarEditor() {
-            document.getElementById('panel-editor').classList.remove('active');
-            archivoSeleccionadoActual = "";
-        }
-
-        document.addEventListener("DOMContentLoaded", () => {
-            if (window.chrome?.webview) {
-                document.getElementById('lbl-entorno').innerText = "App Windows";
-                document.body.classList.add('is-desktop');
+    // ESCUCHAR RESPUESTA JSON DE WPF 
+    if (window.chrome?.webview) {
+        window.chrome.webview.addEventListener('message', event => {
+            const datos = event.data;
+            if (datos && datos.files) {
+                document.getElementById('title-folder').innerText = "Carpeta Sincronizada";
+                document.getElementById('sub-folder').innerText = `Ruta activa: ${datos.path}`;
+                document.getElementById('btn-crear').style.display = "inline-flex";
+                
+                archivosLocalesCargados = datos.files;
+                renderizarArchivosWPF(datos.files);
             }
         });
+    }
 
-        // Opción fallback estándar de desarrollo Chrome
-        async function vincularCarpetaLocalChrome() { 
-            alert("Usa el botón 'Vincular PC' para activar el lector/editor en tiempo real integrado."); 
+    function renderizarArchivosWPF(archivos) {
+        const container = document.getElementById('local-files-container');
+        container.innerHTML = '';
+        
+        if (archivos.length === 0) {
+            container.innerHTML = '<p style="color: var(--text-muted);">Esta carpeta está vacía. ¡Crea un archivo de texto para empezar!</p>';
+            return;
         }
-    </script>
-</body>
-</html>
+
+        archivos.forEach(file => {
+            const card = document.createElement('div');
+            card.className = 'file-card-item';
+            // Al hacer clic, abrimos directamente el editor simulando lectura inmediata
+            card.onclick = () => abrirEditorTexto(file.name, "Haz clic aquí para escribir el contenido de tu documento...");
+            card.innerHTML = `
+                <i class="fa-solid fa-file-lines"></i>
+                <div class="file-info-name" title="${file.name}">${file.name}</div>
+                <div class="file-info-meta">${file.size} • En Disco</div>
+            `;
+            container.appendChild(card);
+        });
+    }
+
+    let archivoSeleccionadoActual = "";
+    function abrirEditorTexto(nombre, contenido) {
+        archivoSeleccionadoActual = nombre;
+        document.getElementById('editor-filename').innerText = nombre;
+        document.getElementById('editor-content').value = contenido;
+        document.getElementById('panel-editor').classList.add('active');
+    }
+
+    function mandarGuardadoAWPF() {
+        const nuevoContenido = document.getElementById('editor-content').value;
+        if (window.chrome?.webview && archivoSeleccionadoActual) {
+            // Concatenamos usando un formato limpio: GUARDAR_ANCLA:nombre|contenido
+            window.chrome.webview.postMessage(`GUARDAR_ANCLA:${archivoSeleccionadoActual}|${nuevoContenido}`);
+            cerrarEditor();
+        }
+    }
+
+    function crearNuevoArchivoVacio() {
+        const nombre = prompt("Nombre del archivo nuevo (ej: notas.txt):", "documento.txt");
+        if (!nombre) return;
+        if (window.chrome?.webview) {
+            window.chrome.webview.postMessage(`GUARDAR_ANCLA:${nombre}|`);
+        }
+    }
+
+    function cerrarEditor() {
+        document.getElementById('panel-editor').classList.remove('active');
+        archivoSeleccionadoActual = "";
+    }
+
+    document.addEventListener("DOMContentLoaded", () => {
+        if (window.chrome?.webview) {
+            document.getElementById('lbl-entorno').innerText = "App Windows";
+            document.body.classList.add('is-desktop');
+        }
+    });
+
+    async function vincularCarpetaLocalChrome() { 
+        alert("Usa el botón 'Vincular PC' para activar el lector/editor en tiempo real integrado."); 
+    }
+</script>
