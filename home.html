@@ -1,74 +1,50 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8"><title>SuperDoc Pro</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <meta charset="UTF-8">
     <style>
-        :root { --bg-dark:#070a13; --accent:#6366f1; --success:#10b981; }
-        body { background: var(--bg-dark); color: white; display: flex; height: 100vh; }
-        aside { width: 280px; background: #0b0e1a; padding: 30px; display: flex; flex-direction: column; }
-        .nav-btn { padding: 15px; cursor: pointer; color: #94a3b8; }
-        .nav-btn.active { color: white; border-left: 4px solid var(--accent); }
+        :root { --bg:#070a13; --side:#0b0e1a; --accent:#6366f1; --glass:rgba(255,255,255,0.03); }
+        body { background: var(--bg); color: #fff; font-family: 'Segoe UI', sans-serif; display: flex; height: 100vh; margin: 0; }
+        aside { width: 260px; background: var(--side); padding: 30px; display: flex; flex-direction: column; border-right: 1px solid #1e293b; }
+        .nav-btn { padding: 15px; cursor: pointer; color: #94a3b8; border-radius: 8px; transition: 0.3s; }
+        .nav-btn:hover { background: var(--glass); color: #fff; }
         main { flex-grow: 1; padding: 40px; display: flex; gap: 20px; }
-        .editor-sidebar { width: 400px; background: #0f1424; padding: 20px; display: none; flex-direction: column; }
-        .editor-sidebar.active { display: flex; }
-        textarea { height: 300px; background: #070a13; color: white; margin: 10px 0; }
+        .card { background: var(--glass); padding: 20px; border-radius: 16px; border: 1px solid #1e293b; cursor: pointer; }
+        .editor { width: 400px; background: var(--side); padding: 20px; border-radius: 16px; display: none; }
+        .editor.active { display: flex; flex-direction: column; }
+        textarea { flex-grow: 1; background: var(--bg); color: #fff; border: 1px solid #334155; border-radius: 8px; padding: 10px; }
     </style>
 </head>
 <body>
     <aside>
-        <div style="margin-bottom:40px;"><h2>SuperDoc Pro</h2></div>
-        <div class="nav-btn active" onclick="switchView('computer-view')"><i class="fa-solid fa-desktop"></i> Computador</div>
-        <div class="nav-btn" onclick="cerrarSesion()" style="margin-top: auto; color: #ef4444;"><i class="fa-solid fa-right-from-bracket"></i> Cerrar Sesión</div>
+        <h2>SuperDoc Pro</h2>
+        <div class="nav-btn" onclick="vincular()"><i class="fa-solid fa-desktop"></i> Vincular PC</div>
+        <div class="nav-btn" onclick="cerrar()" style="margin-top:auto; color:#ef4444;"><i class="fa-solid fa-power-off"></i> Salir</div>
     </aside>
-
     <main>
-        <section id="computer-view">
-            <h1>Almacenamiento Local</h1>
-            <button onclick="enviarSolicitudVinculacionWPF()">Vincular PC</button>
-            <div id="local-files-container"></div>
-        </section>
-
-        <div class="editor-sidebar" id="panel-editor">
-            <h2 id="editor-filename">Editando</h2>
-            <textarea id="editor-content"></textarea>
-            <button onclick="mandarGuardadoAWPF()" style="background:var(--success)">Guardar Cambios</button>
+        <div id="grid" style="display:grid; grid-template-columns:1fr 1fr; gap:20px; width:100%"></div>
+        <div class="editor" id="panel">
+            <h3 id="fname">Archivo</h3>
+            <textarea id="fcontent"></textarea>
+            <button onclick="guardar()" style="background:var(--accent); color:white; border:none; padding:10px; cursor:pointer;">Guardar</button>
         </div>
     </main>
-
     <script>
-        let archivoActual = "";
-        function switchView(id) { /* Lógica de visibilidad */ }
+        let file = "";
+        function vincular() { window.chrome?.webview.postMessage("VINCULAR_PC_SOLICITUD"); }
+        function cerrar() { localStorage.clear(); window.location.href = "https://superdocs.pages.dev/logininapp"; }
+        function guardar() { window.chrome?.webview.postMessage("GUARDAR_ANCLA:"+file+"|"+document.getElementById('fcontent').value); document.getElementById('panel').classList.remove('active'); }
         
-        function cerrarSesion() {
-            localStorage.clear();
-            window.location.href = (window.chrome?.webview) ? "https://superdocs.pages.dev/logininapp" : "https://superdocs.pages.dev/login";
-        }
-
-        function enviarSolicitudVinculacionWPF() { window.chrome?.webview.postMessage("VINCULAR_PC_SOLICITUD"); }
-
-        if (window.chrome?.webview) {
-            window.chrome.webview.addEventListener('message', e => {
-                if (e.data.files) renderizar(e.data.files);
-            });
-        }
-
-        function renderizar(archivos) {
-            const container = document.getElementById('local-files-container');
-            container.innerHTML = '';
-            archivos.forEach(f => {
+        window.chrome?.webview.addEventListener('message', e => {
+            document.getElementById('grid').innerHTML = '';
+            e.data.files.forEach(f => {
                 let div = document.createElement('div');
-                div.innerHTML = f.name;
-                div.onclick = () => { archivoActual = f.name; document.getElementById('panel-editor').classList.add('active'); };
-                container.appendChild(div);
+                div.className = 'card';
+                div.innerText = f.name;
+                div.onclick = () => { file = f.name; document.getElementById('fname').innerText=f.name; document.getElementById('panel').classList.add('active'); };
+                document.getElementById('grid').appendChild(div);
             });
-        }
-
-        function mandarGuardadoAWPF() {
-            let val = document.getElementById('editor-content').value;
-            window.chrome?.webview.postMessage(`GUARDAR_ANCLA:${archivoActual}|${val}`);
-            document.getElementById('panel-editor').classList.remove('active');
-        }
+        });
     </script>
 </body>
 </html>
