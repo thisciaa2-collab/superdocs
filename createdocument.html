@@ -95,19 +95,20 @@
         let usuarioActual = null;
 
         onAuthStateChanged(auth, (user) => {
-            if (user) { usuarioActual = user; } 
-            else { window.location.href = "logininapp"; }
+            if (user) { 
+                usuarioActual = user; 
+            } else { 
+                window.location.href = "logininapp"; 
+            }
         });
 
         const editor = document.getElementById("editor-wysiwyg");
 
-        // Captura e inyección de comandos de formato
         window.ejecutarComando = (comando) => {
             document.execCommand(comando, false, null);
             editor.focus();
         };
 
-        // Atajos de teclado CTRL+B y CTRL+I
         editor.addEventListener("keydown", (e) => {
             if (e.ctrlKey || e.metaKey) {
                 if (e.key.toLowerCase() === "b") { e.preventDefault(); window.ejecutarComando("bold"); }
@@ -151,7 +152,9 @@
                 });
 
                 alert("¡Documento compartido exitosamente!");
-            } catch (err) { console.error(err); }
+            } catch (err) { 
+                console.error(err); 
+            }
         };
     </script>
 </body>
