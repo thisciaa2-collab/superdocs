@@ -2,27 +2,49 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>SuperDoc - Dashboard</title>
+    <title>SuperDocs Pro</title>
     <style>
-        body { background: #05070f; color: #f3f4f6; font-family: sans-serif; height: 100vh; margin: 0; display: flex; }
-        aside { width: 260px; background: #090d1a; padding: 24px; border-right: 1px solid #1f2937; }
-        main { flex-grow: 1; padding: 40px; }
-        .btn-logout { cursor: pointer; color: #ef4444; margin-top: 20px; font-weight: bold; }
+        :root { --bg: #030408; --glass: rgba(255, 255, 255, 0.03); --accent: #4f46e5; }
+        body { background: var(--bg); color: white; font-family: 'Inter', sans-serif; display: flex; height: 100vh; margin: 0; overflow: hidden; }
+        
+        /* Sidebar Profesional */
+        aside { width: 280px; background: var(--glass); backdrop-filter: blur(20px); border-right: 1px solid rgba(255,255,255,0.05); padding: 30px; display: flex; flex-direction: column; }
+        
+        /* Contenedor Principal con Gradiente */
+        main { flex-grow: 1; padding: 60px; background: radial-gradient(circle at top right, #1e1b4b, transparent); }
+        
+        /* Tarjetas de alto impacto */
+        .dashboard-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+        .card { background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.1); padding: 30px; border-radius: 20px; transition: 0.3s; }
+        .card:hover { transform: translateY(-10px); background: rgba(255,255,255,0.06); }
+        
+        h1 { font-size: 3rem; margin-bottom: 40px; letter-spacing: -2px; }
     </style>
 </head>
 <body>
     <aside>
-        <h2>SuperDocs</h2>
-        <nav>
-            <p>🏠 Inicio</p>
-            <p class="btn-logout" onclick="cerrarSesion()">🚪 Cerrar Sesión</p>
+        <h2 style="color: var(--accent);">⚡ SuperDocs Desktop</h2>
+        <nav style="margin-top: 40px;">
+            <p>Dashboard</p>
+            <p>Proyectos IA</p>
+            <p onclick="cerrarSesion()" style="color: #f87171; cursor:pointer; margin-top: 100px;">Cerrar Sesión</p>
         </nav>
     </aside>
     <main>
-        <h1>Bienvenido al Panel</h1>
-        <p>Has iniciado sesión correctamente.</p>
+        <h1>Tu Espacio de Trabajo</h1>
+        <div class="dashboard-grid">
+            <div class="card"><h3>Editor IA</h3><p>Análisis en tiempo real.</p></div>
+            <div class="card"><h3>Plantillas</h3><p>Acceso ilimitado.</p></div>
+            <div class="card"><h3>Configuración</h3><p>Ajustes de sistema.</p></div>
+        </div>
     </main>
 
     <script type="module" src="script.js"></script>
+    <script>
+        // Si detecta que es App, inyecta clase "is-desktop" para efectos extra
+        if (window.chrome && window.chrome.webview) {
+            document.body.classList.add('is-desktop');
+        }
+    </script>
 </body>
 </html>
