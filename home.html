@@ -3,93 +3,393 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚡ SuperDocs — Inicio</title>
+    <title>SuperDocs — Panel Principal</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --bg-main: #05070f;
+            --bg-sidebar: #090d1a;
+            --bg-card: #0e1326;
+            --bg-card-hover: #141b36;
+            --accent: #3b82f6;
+            --accent-gradient: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --border: rgba(255, 255, 255, 0.06);
+            --radius-lg: 16px;
+            --radius-md: 12px;
+        }
 
-    <!-- Configuración del Favicon -->
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
-    <link rel="shortcut icon" href="favicon-32x32.png" type="image/x-icon">
-    <link rel="apple-touch-icon" href="favicon-32x32.png">
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            user-select: none;
+        }
 
-    <link rel="stylesheet" href="style.css">
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* --- MENÚ LATERAL --- */
+        aside {
+            width: 260px;
+            background-color: var(--bg-sidebar);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 24px;
+        }
+
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 40px;
+            padding-left: 8px;
+        }
+
+        .logo-icon {
+            width: 32px;
+            height: 32px;
+            background: var(--accent-gradient);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 18px;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            background: linear-gradient(180deg, #fff 0%, #a5b4fc 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            flex-grow: 1;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 14px;
+            color: var(--text-muted);
+            border-radius: var(--radius-md);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            color: var(--text-main);
+            background-color: rgba(255, 255, 255, 0.04);
+        }
+
+        .nav-item.active {
+            background: rgba(59, 130, 246, 0.1);
+            color: #60a5fa;
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+
+        .btn-logout {
+            margin-top: 10px;
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.1);
+        }
+
+        .btn-logout:hover {
+            background-color: rgba(239, 68, 68, 0.1) !important;
+            color: #f87171;
+        }
+
+        .user-profile {
+            border-top: 1px solid var(--border);
+            padding-top: 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background-color: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .user-info .username {
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .user-info .role {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* --- ÁREA PRINCIPAL --- */
+        main {
+            flex-grow: 1;
+            padding: 40px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 32px;
+        }
+
+        .header-dashboard {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .welcome-text h1 {
+            font-size: 28px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            margin-bottom: 6px;
+        }
+
+        .welcome-text p {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: var(--accent-gradient);
+            color: #fff;
+            border: none;
+            padding: 12px 24px;
+            border-radius: var(--radius-md);
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            box-shadow: 0 4px 14px rgba(59, 130, 246, 0.2);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.3);
+        }
+
+        /* --- GRID DE TARJETAS --- */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .card:hover {
+            background-color: var(--bg-card-hover);
+            border-color: rgba(59, 130, 246, 0.3);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.4);
+        }
+
+        .card-icon {
+            width: 42px;
+            height: 42px;
+            background-color: rgba(255, 255, 255, 0.03);
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            border: 1px solid var(--border);
+        }
+
+        .card:hover .card-icon {
+            background-color: rgba(59, 130, 246, 0.1);
+            border-color: rgba(59, 130, 246, 0.2);
+            color: #60a5fa;
+        }
+
+        .card-info h3 {
+            font-size: 16px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .card-info p {
+            color: var(--text-muted);
+            font-size: 13px;
+            line-height: 1.5;
+        }
+
+        /* --- DOCUMENTOS RECIENTES --- */
+        .recent-section {
+            background-color: var(--bg-sidebar);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 24px;
+        }
+
+        .recent-section h2 {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        .table-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 16px;
+            border-bottom: 1px solid var(--border);
+            transition: background-color 0.2s ease;
+            border-radius: var(--radius-md);
+        }
+
+        .table-row:last-child {
+            border-bottom: none;
+        }
+
+        .table-row:hover {
+            background-color: rgba(255, 255, 255, 0.02);
+        }
+
+        .doc-name {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .doc-meta {
+            color: var(--text-muted);
+            font-size: 13px;
+        }
+    </style>
 </head>
 <body>
 
-    <div class="app-container">
-        <!-- BARRA LATERAL CON MENÚ DE USUARIO -->
-        <aside class="sidebar">
-            <div class="logo">⚡ <span>SuperDocs</span></div>
-            
-            <!-- Componente de Perfil de Usuario -->
-            <div class="menu-usuario">
-                <div class="usuario-avatar" id="userAvatar">👤</div>
-                <div class="usuario-info">
-                    <div class="usuario-nombre" id="userNombre">Cargando...</div>
-                    <div class="usuario-correo" id="userCorreo">correo@ejemplo.com</div>
+    <aside>
+        <div class="logo-container">
+            <div class="logo-icon">⚡</div>
+            <div class="logo-text">SuperDoc</div>
+        </div>
+
+        <nav class="nav-group">
+            <div class="nav-item active"><span>🏠</span> Inicio</div>
+            <div class="nav-item"><span>📁</span> Mis Documentos</div>
+            <div class="nav-item"><span>✨</span> Plantillas IA</div>
+            <div class="nav-item"><span>⚙&lt;</span> Configuración</div>
+        </nav>
+
+        <div class="user-profile">
+            <div class="avatar">D</div>
+            <div class="user-info">
+                <div class="username">Desarrollador</div>
+                <div class="role">Cuenta Pro</div>
+            </div>
+        </div>
+
+        <div class="nav-item btn-logout" onclick="cerrarSesionApp()">
+            <span>🚪</span> Cerrar Sesión
+        </div>
+    </aside>
+
+    <main>
+        <div class="header-dashboard">
+            <div class="welcome-text">
+                <h1>Bienvenido a SuperDoc</h1>
+                <p>Gestiona tus textos inteligentes y flujos de trabajo profesionales.</p>
+            </div>
+            <button class="btn-primary">+ Nuevo Documento</button>
+        </div>
+
+        <div class="grid-container">
+            <div class="card">
+                <div class="card-icon">✍️</div>
+                <div class="card-info">
+                    <h3>Editor Inteligente</h3>
+                    <p>Redacta textos con corrector avanzado de gramática y ortografía en tiempo real.</p>
                 </div>
             </div>
 
-            <!-- Los 5 Botones de Navegación del Menú -->
-            <div class="grupo-control">
-                <label>Navegación</label>
-                <button onclick="window.location.href='createdocument.html'"><span class="icon">➕</span> Crear archivo</button>
-                <button onclick="window.location.href='history.html'"><span class="icon">📜</span> Historial de archivos</button>
-                <button onclick="window.location.href='addfriend.html'"><span class="icon">👥</span> Añadir amigos</button>
-                <button onclick="window.location.href='windowsapp.html'"><span class="icon">🪟</span> Descarga nuestra app</button>
+            <div class="card">
+                <div class="card-icon">🧠</div>
+                <div class="card-info">
+                    <h3>Análisis de Estilo</h3>
+                    <p>Optimiza la estructura de tus cartas, correos y ensayos profesionales al instante.</p>
+                </div>
             </div>
 
-            <!-- Gestión de Cuenta -->
-            <div class="grupo-control">
-                <label>Cuenta</label>
-                <button onclick="cerrarSesion()" class="btn-logout">🚪 Cerrar Sesión</button>
+            <div class="card">
+                <div class="card-icon">📊</div>
+                <div class="card-info">
+                    <h3>Estadísticas</h3>
+                    <p>Revisa la fluidez, conteo de palabras y métricas clave de tus documentos.</p>
+                </div>
             </div>
-        </aside>
+        </div>
 
-        <!-- LIENZO CENTRAL: BIENVENIDA -->
-        <main class="zona-editor">
-            <div class="contenedor-bienvenida">
-                <h1>¡Hola de nuevo! 👋</h1>
-                <p>Bienvenido a tu panel de control de SuperDocs. Usa el menú de la izquierda para navegar, revisar tus archivos o redactar un nuevo manuscrito protegido por cifrado.</p>
-                <button class="btn-accion-principal" onclick="window.location.href='createdocument.html'">➕ Redactar un nuevo archivo</button>
+        <div class="recent-section">
+            <h2>Documentos Recientes</h2>
+            
+            <div class="table-row">
+                <div class="doc-name"><span>📄</span> Informe_Final_Proyecto.docx</div>
+                <div class="doc-meta">Modificado hace 10 min</div>
             </div>
-        </main>
-    </div>
 
-    <!-- Script de control de Home -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
-        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
+            <div class="table-row">
+                <div class="doc-name"><span>📝</span> Minuta_Reunion_Semanal.txt</div>
+                <div class="doc-meta">Modificado ayer</div>
+            </div>
+        </div>
+    </main>
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyDJw_sL9YLe2WbUMf6j5MDTEdHhqvy1u7s",
-            authDomain: "superdocs2026.firebaseapp.com",
-            projectId: "superdocs2026",
-            storageBucket: "superdocs2026.firebasestorage.app",
-            messagingSenderId: "517642206953",
-            appId: "1:517642206953:web:f732ae4dc855feb3aafa78",
-            measurementId: "G-KN295LVLHK"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const auth = getAuth(app);
-
-        const userNombre = document.getElementById("userNombre");
-        const userCorreo = document.getElementById("userCorreo");
-        const userAvatar = document.getElementById("userAvatar");
-
-        onAuthStateChanged(auth, (usuario) => {
-            if (usuario) {
-                userCorreo.innerText = usuario.email;
-                userNombre.innerText = usuario.displayName ? usuario.displayName : "Usuario de SuperDocs";
-                if (usuario.photoURL) {
-                    userAvatar.innerHTML = `<img src="${usuario.photoURL}" alt="Avatar">`;
-                }
+    <script>
+        function cerrarSesionApp() {
+            if (window.chrome && window.chrome.webview) {
+                // Envía el comando exacto a C# para borrar el archivo físico sesion.dat
+                window.chrome.webview.postMessage("CERRAR_SESION");
             } else {
-                window.location.href = "login.html";
+                localStorage.removeItem("sesion_token");
             }
-        });
-
-        window.cerrarSesion = function() {
-            signOut(auth).then(() => { window.location.href = "login.html"; });
+            // Regresa de inmediato a la interfaz de Login
+            window.location.href = "login.html";
         }
     </script>
 </body>
