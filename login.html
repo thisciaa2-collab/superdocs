@@ -4,83 +4,252 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SuperDocs — Iniciar Sesión</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         :root {
-            --bg-main: #05070f;
-            --bg-card: #0e1326;
-            --accent: #3b82f6;
-            --accent-hover: #1d4ed8;
-            --text-main: #f3f4f6;
-            --text-muted: #9ca3af;
-            --border: rgba(255, 255, 255, 0.06);
-            --radius: 12px;
+            --bg-dark: #05070f;
+            --bg-card: #0f1424;
+            --accent-primary: #6366f1;
+            --accent-hover: #4f46e5;
+            --github-brand: #24292e;
+            --github-hover: #1f2327;
+            --text-main: #f1f5f9;
+            --text-muted: #64748b;
+            --border: rgba(255, 255, 255, 0.05);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            user-select: none;
-            font-family: 'Plus Jakarta Sans', sans-serif;
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+            font-family: 'Segoe UI', system-ui, sans-serif; 
+        }
+        
+        body { 
+            background: radial-gradient(circle at center, #14112e, var(--bg-dark)); 
+            color: var(--text-main); 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            height: 100vh; 
+            overflow: hidden; 
         }
 
-        body {
-            background-color: var(--bg-main);
-            color: var(--text-main);
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+        .login-container { 
+            background: var(--bg-card); 
+            border: 1px solid var(--border); 
+            width: 100%; 
+            max-width: 420px; 
+            padding: 40px; 
+            border-radius: 24px; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5); 
+            display: flex; 
+            flex-direction: column; 
+            gap: 24px; 
+        }
+        
+        .brand-header { 
+            text-align: center; 
+        }
+        
+        .brand-header i { 
+            font-size: 36px; 
+            color: var(--accent-primary); 
+            margin-bottom: 12px; 
+        }
+        
+        .brand-header h1 { 
+            font-size: 24px; 
+            font-weight: 700; 
+            letter-spacing: -0.5px; 
+        }
+        
+        .brand-header p { 
+            color: var(--text-muted); 
+            font-size: 14px; 
+            margin-top: 4px; 
         }
 
-        .login-container {
-            background-color: var(--bg-card);
-            border: 1px solid var(--border);
-            padding: 40px;
-            width: 100%;
-            max-width: 420px;
-            border-radius: 16px;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
-            text-align: center;
+        .form-group { 
+            display: flex; 
+            flex-direction: column; 
+            gap: 8px; 
+        }
+        
+        .form-group label { 
+            font-size: 12px; 
+            color: var(--text-muted); 
+            font-weight: 600; 
+            text-transform: uppercase; 
+            letter-spacing: 0.5px; 
+        }
+        
+        .input-wrapper { 
+            position: relative; 
+            display: flex; 
+            align-items: center; 
+        }
+        
+        .input-wrapper i { 
+            position: absolute; 
+            left: 16px; 
+            color: var(--text-muted); 
+            font-size: 16px; 
+        }
+        
+        .form-input { 
+            width: 100%; 
+            background: rgba(0,0,0,0.3); 
+            border: 1px solid var(--border); 
+            padding: 16px 16px 16px 48px; 
+            border-radius: 12px; 
+            color: var(--text-main); 
+            font-size: 15px; 
+            outline: none; 
+            transition: all 0.2s; 
+        }
+        
+        .form-input:focus { 
+            border-color: var(--accent-primary); 
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15); 
         }
 
-        .logo-area {
-            margin-bottom: 32px;
+        .btn-primary { 
+            background: linear-gradient(135deg, #6366f1, #4f46e5); 
+            color: white; 
+            border: none; 
+            padding: 16px; 
+            border-radius: 12px; 
+            font-weight: 600; 
+            font-size: 15px; 
+            cursor: pointer; 
+            transition: opacity 0.2s; 
+            width: 100%; 
+        }
+        
+        .btn-primary:hover { 
+            opacity: 0.95; 
         }
 
-        .logo-icon {
-            font-size: 36px;
-            margin-bottom: 8px;
-            display: inline-block;
+        .divider { 
+            display: flex; 
+            align-items: center; 
+            text-align: center; 
+            color: var(--text-muted); 
+            font-size: 12px; 
+            font-weight: 600; 
+            text-transform: uppercase; 
         }
+        
+        .divider::before, .divider::after { 
+            content: ''; 
+            flex: 1; 
+            border-bottom: 1px solid var(--border); 
+        }
+        
+        .divider:not(:empty)::before { margin-right: .5em; }
+        .divider:not(:empty)::after { margin-left: .5em; }
 
-        .logo-title {
-            font-size: 26px;
-            font-weight: 700;
-            letter-spacing: -0.5px;
+        .btn-github { 
+            background: var(--github-brand); 
+            color: white; 
+            border: 1px solid rgba(255,255,255,0.1); 
+            padding: 14px; 
+            border-radius: 12px; 
+            font-weight: 600; 
+            font-size: 15px; 
+            cursor: pointer; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            gap: 10px; 
+            transition: background 0.2s; 
+            width: 100%; 
         }
+        
+        .btn-github:hover { 
+            background: var(--github-hover); 
+        }
+    </style>
+</head>
+<body>
 
-        .logo-subtitle {
-            color: var(--text-muted);
-            font-size: 14px;
-            margin-top: 4px;
-        }
+    <div class="login-container">
+        <div class="brand-header">
+            <i class="fa-solid fa-feather-pointed"></i>
+            <h1>SuperDocs</h1>
+            <p>Entorno de Escritura Inteligente</p>
+        </div>
 
-        .form-group {
-            text-align: left;
-            margin-bottom: 20px;
-        }
+        <div class="form-group">
+            <label>Correo Electrónico</label>
+            <div class="input-wrapper">
+                <i class="fa-solid fa-envelope"></i>
+                <input type="email" id="email" class="form-input" placeholder="tu@correo.com">
+            </div>
+        </div>
 
-        label {
-            display: block;
-            font-size: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--text-muted);
-            margin-bottom: 8px;
-        }
+        <div class="form-group">
+            <label>Contraseña</label>
+            <div class="input-wrapper">
+                <i class="fa-solid fa-lock"></i>
+                <input type="password" id="password" class="form-input" placeholder="••••••••">
+            </div>
+        </div>
+
+        <button class="btn-primary" onclick="loginConEmail()">Iniciar Sesión</button>
+
+        <div class="divider">o continúa con</div>
+
+        <button class="btn-github" onclick="loginConGitHub()">
+            <i class="fa-brands fa-github"></i> Acceder con GitHub
+        </button>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
+        import { getAuth, signInWithEmailAndPassword, signInWithPopup, GithubAuthProvider } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyDJw_sL9YLe2WbUMf6j5MDTEdHhqvy1u7s",
+          authDomain: "superdocs2026.firebaseapp.com",
+          projectId: "superdocs2026",
+          storageBucket: "superdocs2026.firebasestorage.app",
+          messagingSenderId: "517642206953",
+          appId: "1:517642206953:web:f732ae4dc855feb3aafa78",
+          measurementId: "G-KN295LVLHK"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const providerGitHub = new GithubAuthProvider();
+
+        window.loginConEmail = async () => {
+            const email = document.getElementById("email").value.trim();
+            const password = document.getElementById("password").value.trim();
+
+            if (!email || !password) {
+                alert("Por favor, rellena todos los campos.");
+                return;
+            }
+
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+                window.location.href = "home.html";
+            } catch (error) {
+                alert("Error de autenticación: " + error.message);
+            }
+        };
+
+        window.loginConGitHub = async () => {
+            try {
+                await signInWithPopup(auth, providerGitHub);
+                window.location.href = "home.html";
+            } catch (error) {
+                console.error("Error en la conexión con GitHub: ", error);
+                alert("No se pudo completar el acceso con GitHub: " + error.message);
+            }
+        };
+    </script>
+</body>
+</html>
