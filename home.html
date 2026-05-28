@@ -32,11 +32,29 @@
         .brand i { font-size: 24px; color: var(--accent-primary); }
         .brand h2 { font-size: 20px; font-weight: 700; letter-spacing: 0.5px; }
         
-        nav { display: flex; flex-direction: column; gap: 8px; flex-grow: 1; }
-        .nav-btn { display: flex; align-items: center; gap: 14px; padding: 14px 18px; color: var(--text-muted); border-radius: 12px; cursor: pointer; transition: all 0.2s ease; font-weight: 500; }
+        nav { display: flex; flex-direction: column; gap: 8px; flex-grow: 1; overflow-y: auto; }
+        
+        /* Ajuste de scrollbar invisible para el menú */
+        nav::-webkit-scrollbar { width: 0px; background: transparent; }
+
+        .nav-btn { display: flex; align-items: center; gap: 14px; padding: 14px 18px; color: var(--text-muted); border-radius: 12px; cursor: pointer; transition: all 0.2s ease; font-weight: 500; text-decoration: none; user-select: none; }
         .nav-btn:hover { color: var(--text-main); background: rgba(255,255,255,0.02); }
         .nav-btn.active { color: var(--text-main); background: var(--accent-primary); box-shadow: 0 4px 20px var(--accent-glow); }
-        .nav-btn i { font-size: 18px; }
+        .nav-btn i { font-size: 18px; width: 20px; text-align: center; }
+
+        /* Estilos Nuevos para la Sección de Carpetas Avanzadas */
+        .folder-section-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; color: var(--text-muted); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; cursor: pointer; margin-top: 10px; user-select: none; }
+        .folder-section-header:hover { color: var(--text-main); }
+        .folder-section-header div { display: flex; align-items: center; gap: 14px; }
+        .folder-section-header div i { font-size: 16px; width: 20px; text-align: center; }
+        .arrow-icon { font-size: 11px; transition: transform 0.3s ease; }
+        .arrow-icon.rotated { transform: rotate(-180deg); }
+
+        .submenu-container { display: flex; flex-direction: column; gap: 4px; padding-left: 16px; overflow: hidden; transition: max-height 0.3s ease-in-out; max-height: 200px; }
+        .submenu-item { padding: 11px 14px; font-size: 14px; color: #94a3b8; }
+        .submenu-item i { font-size: 15px; }
+        
+        .badge-app { background: rgba(99, 102, 241, 0.15); color: #818cf8; font-size: 10px; padding: 2px 6px; border-radius: 6px; font-weight: 600; margin-left: auto; border: 1px solid rgba(99, 102, 241, 0.2); text-transform: uppercase; }
 
         .btn-logout { margin-top: auto; color: #ef4444; }
         .btn-logout:hover { background: rgba(239, 68, 68, 0.1); color: #f87171; }
@@ -55,6 +73,14 @@
         .stat-card { background: var(--bg-card); border: 1px solid var(--border); padding: 24px; border-radius: 16px; }
         .stat-card h3 { font-size: 14px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; }
         .stat-card p { font-size: 24px; font-weight: 700; }
+
+        /* Explorer Files Layout */
+        .files-explorer-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-top: 20px; }
+        .file-card-item { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 20px; display: flex; flex-direction: column; gap: 12px; cursor: pointer; transition: all 0.2s; }
+        .file-card-item:hover { border-color: var(--accent-primary); transform: translateY(-2px); }
+        .file-card-item i { font-size: 32px; color: var(--accent-primary); }
+        .file-info-name { font-weight: 600; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .file-info-meta { color: var(--text-muted); font-size: 12px; }
 
         /* Editor de Documentos Premium */
         .editor-container { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; height: calc(100vh - 160px); }
@@ -91,6 +117,20 @@
         </div>
         <nav>
             <div class="nav-btn active" onclick="switchView('home-view')"><i class="fa-solid fa-house"></i>Home</div>
+            
+            <div class="folder-section-header" onclick="toggleSubmenu('foldersSubmenu', 'arrowIcon')">
+                <div><i class="fa-solid fa-folder-tree"></i>Mis carpetas</div>
+                <i class="fa-solid fa-chevron-down arrow-icon" id="arrowIcon"></i>
+            </div>
+            <div class="submenu-container" id="foldersSubmenu">
+                <div class="nav-btn submenu-item" id="folderComputer" onclick="switchView('computer-view')" style="display: none;">
+                    <i class="fa-solid fa-desktop"></i>Computador <span class="badge-app">App</span>
+                </div>
+                <div class="nav-btn submenu-item" id="folderShared" onclick="switchView('shared-view')">
+                    <i class="fa-solid fa-user-group"></i>Compartidos
+                </div>
+            </div>
+
             <div class="nav-btn" onclick="switchView('editor-view')"><i class="fa-solid fa-file-pen"></i>Nuevo Documento</div>
             <div class="nav-btn" onclick="switchView('friends-view')"><i class="fa-solid fa-user-plus"></i>Añadir Amigo</div>
             <div class="nav-btn" onclick="switchView('inbox-view')"><i class="fa-solid fa-envelope"></i>Bandeja de Entrada</div>
@@ -109,6 +149,35 @@
             <div style="background: var(--bg-card); border: 1px solid var(--border); padding: 30px; border-radius: 16px;">
                 <h2 style="font-size: 18px; margin-bottom: 10px;">Motor de Rendimiento Activo</h2>
                 <p style="color: var(--text-muted); font-size: 14px;">Sincronizado nativamente con el núcleo de persistencia local en Windows mediante cifrado binario.</p>
+            </div>
+        </section>
+
+        <section id="computer-view" class="view-section">
+            <h1>Almacenamiento Local: Computador</h1>
+            <p style="color: var(--text-muted); margin-bottom: 20px;">Archivos guardados físicamente en el disco duro de tu ordenador mediante la aplicación de escritorio.</p>
+            <div class="files-explorer-grid" id="local-files-container">
+                <div class="file-card-item">
+                    <i class="fa-solid fa-file-word"></i>
+                    <div class="file-info-name">Contrato_Servicios.docx</div>
+                    <div class="file-info-meta">C:/SuperDocs/Docs • Hace 2 horas</div>
+                </div>
+                <div class="file-card-item">
+                    <i class="fa-solid fa-file-code"></i>
+                    <div class="file-info-name">Configuracion_Local.json</div>
+                    <div class="file-info-meta">C:/SuperDocs/Config • Ayer</div>
+                </div>
+            </div>
+        </section>
+
+        <section id="shared-view" class="view-section">
+            <h1>Compartidos conmigo</h1>
+            <p style="color: var(--text-muted); margin-bottom: 20px;">Documentos en la nube compartidos por otros colaboradores de SuperDoc Pro.</p>
+            <div class="files-explorer-grid" id="shared-files-container">
+                <div class="file-card-item">
+                    <i class="fa-solid fa-file-lines" style="color: #10b981;"></i>
+                    <div class="file-info-name">Proyecto_Final_Compartido</div>
+                    <div class="file-info-meta">De: carlos.dev@gmail.com</div>
+                </div>
             </div>
         </section>
 
@@ -146,25 +215,55 @@
 
         <section id="inbox-view" class="view-section">
             <h1>Bandeja de Entrada</h1>
-            <div class="inbox-list" id="inbox-render-target">
-                </div>
+            <div class="inbox-list" id="inbox-render-target"></div>
         </section>
     </main>
 
     <script>
-        // Lógica de navegación SPA estructural inmediata
+        // Lógica estructural de navegación SPA cambiada a soporte múltiple
         window.switchView = function(viewId) {
             document.querySelectorAll('.view-section').forEach(section => section.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-            document.getElementById(viewId).classList.add('active');
             
-            const targetBtn = Array.from(document.querySelectorAll('.nav-btn')).find(btn => btn.getAttribute('onclick').includes(viewId));
+            const targetSection = document.getElementById(viewId);
+            if(targetSection) targetSection.classList.add('active');
+            
+            // Ilumina el botón del menú padre o hijo de forma correcta
+            const targetBtn = Array.from(document.querySelectorAll('.nav-btn')).find(btn => {
+                const attr = btn.getAttribute('onclick');
+                return attr && attr.includes(viewId);
+            });
             if(targetBtn) targetBtn.classList.add('active');
         };
 
-        if (window.chrome && window.chrome.webview) {
-            document.body.classList.add('is-desktop');
-        }
+        // Animación dinámica de acordeón de carpetas
+        window.toggleSubmenu = function(submenuId, arrowId) {
+            const submenu = document.getElementById(submenuId);
+            const arrow = document.getElementById(arrowId);
+            if (submenu.style.maxHeight === "0px" || !submenu.style.maxHeight) {
+                submenu.style.maxHeight = "200px";
+                arrow.classList.remove('rotated');
+            } else {
+                submenu.style.maxHeight = "0px";
+                arrow.classList.add('rotated');
+            }
+        };
+
+        // Verificación activa de entorno nativo Windows (WebView2)
+        window.analizarEntornoEscritorio = function() {
+            const esAppEscritorio = window.chrome && window.chrome.webview;
+            const folderComputer = document.getElementById('folderComputer');
+            
+            if (esAppEscritorio) {
+                document.body.classList.add('is-desktop');
+                if(folderComputer) folderComputer.style.display = 'flex';
+            }
+        };
+
+        // Inicialización inmediata al renderizar el DOM
+        document.addEventListener("DOMContentLoaded", () => {
+            window.analizarEntornoEscritorio();
+        });
     </script>
     <script type="module" src="script.js"></script>
 </body>
