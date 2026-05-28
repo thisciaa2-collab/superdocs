@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SuperDoc Pro - Añadir Amigo</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <style>
+        :root {
+            --bg-dark: #070a13;
+            --bg-card: #0f1424;
+            --sidebar-bg: #0b0e1a;
+            --accent-primary: #6366f1;
+            --text-main: #f1f5f9;
+            --text-muted: #64748b;
+            --border: rgba(255, 255, 255, 0.05);
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', system-ui, sans-serif; }
+        body { background: radial-gradient(circle at top right, #14112e, var(--bg-dark)); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
+
+        aside { width: 280px; background: var(--sidebar-bg); border-right: 1px solid var(--border); display: flex; flex-direction: column; padding: 30px 20px; }
+        .brand { display: flex; align-items: center; gap: 12px; margin-bottom: 40px; }
+        .brand i { font-size: 24px; color: var(--accent-primary); }
+        .brand h2 { font-size: 20px; font-weight: 700; }
+        
+        nav { display: flex; flex-direction: column; gap: 8px; flex-grow: 1; }
+        .nav-btn { display: flex; align-items: center; gap: 14px; padding: 14px 18px; color: var(--text-muted); border-radius: 12px; cursor: pointer; transition: all 0.2s; font-weight: 500; text-decoration: none; }
+        .nav-btn:hover { color: var(--text-main); background: rgba(255,255,255,0.02); }
+        .nav-btn.active { color: var(--text-main); background: var(--accent-primary); }
+
+        main { flex-grow: 1; padding: 40px; display: flex; flex-direction: column; }
+        h1 { font-size: 28px; font-weight: 700; margin-bottom: 24px; }
+
+        .form-card { background: var(--bg-card); border: 1px solid var(--border); padding: 40px; border-radius: 20px; max-width: 550px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
+        .form-group { margin-bottom: 24px; display: flex; flex-direction: column; gap: 8px; }
+        .form-group label { font-size: 14px; color: var(--text-muted); font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+        .form-input { background: rgba(0,0,0,0.2); border: 1px solid var(--border); padding: 16px; border-radius: 12px; color: var(--text-main); font-size: 15px; outline: none; transition: border-color 0.2s; }
+        .form-input:focus { border-color: var(--accent-primary); }
+        
+        .btn-action { background: linear-gradient(135deg, #a3e635, #84cc16); color: #070a13; border: none; padding: 16px 32px; border-radius: 12px; cursor: pointer; font-weight: 700; font-size: 16px; display: inline-flex; align-items: center; gap: 10px; transition: opacity 0.2s; }
+        .btn-action:hover { opacity: 0.9; }
+    </style>
+</head>
+<body>
+
+    <aside>
+        <div class="brand"><i class="fa-solid fa-feather-pointed"></i><h2>SuperDoc Pro</h2></div>
+        <nav>
+            <a href="home.html" class="nav-btn"><i class="fa-solid fa-house"></i>Home</a>
+            <a href="createdocument.html" class="nav-btn"><i class="fa-solid fa-file-pen"></i>Nuevo Documento</a>
+            <a href="addfriend.html" class="nav-btn active"><i class="fa-solid fa-user-plus"></i>Añadir Amigo</a>
+        </nav>
+    </aside>
+
+    <main>
+        <h1>Gestión de Colaboradores</h1>
+        <div class="form-card">
+            <div class="form-group">
+                <label>Nombre del Amigo</label>
+                <input type="text" id="friend-name" class="form-input" placeholder="Ej. Alexander Salazar">
+            </div>
+            <div class="form-group">
+                <label>Correo Electrónico</label>
+                <input type="email" id="friend-email" class="form-input" placeholder="amigo@correo.com">
+            </div>
+            <button class="btn-action" onclick="enviarSolicitud()"><i class="fa-solid fa-user-plus"></i> Enviar Enlace Pro</button>
+        </div>
+    </main>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-app.js";
+        import { getAuth, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-auth.js";
+        import { getFirestore, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.10.0/firebase-firestore.js";
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyDJw_sL9YLe2WbUMf6j5MDTEdHhqvy1u7s",
+          authDomain: "superdocs2026.firebaseapp.com",
+          projectId: "superdocs2026",
+          storageBucket: "superdocs2026.firebasestorage.app",
+          messagingSenderId: "517642206953",
+          appId: "1:517642206953:web:f732ae4dc855feb3aafa78",
+          measurementId: "G-KN295LVLHK"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        let usuarioActual = null;
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) { usuarioActual = user; } 
+            else { window.location.href = "logininapp"; }
+        });
+
+        window.enviarSolicitud = async () => {
+            const nombre = document.getElementById("friend-name").value.trim();
+            const email = document.getElementById("friend-email").value.trim();
+
+            if (!nombre || !email || !usuarioActual) {
+                alert("Completa todos los campos obligatorios.");
+                return;
+            }
+
+            try {
+                await addDoc(collection(db, "friends"), {
+                    userEmail: usuarioActual.email,
+                    friendName: nombre,
+                    friendEmail: email,
+                    timestamp: serverTimestamp()
+                });
+
+                await addDoc(collection(db, "inbox"), {
+                    toEmail: email,
+                    fromName: usuarioActual.displayName || "Usuario de SuperDoc",
+                    fromEmail: usuarioActual.email,
+                    type: "SOLICITUD_AMISTAD",
+                    message: `Te ha añadido como amigo en la plataforma de desarrollo.`,
+                    timestamp: serverTimestamp(),
+                    read: false
+                });
+
+                alert(`¡Solicitud enviada de forma segura a ${nombre}!`);
+                document.getElementById("friend-name").value = "";
+                document.getElementById("friend-email").value = "";
+            } catch (err) { console.error(err); }
+        };
+    </script>
+</body>
+</html>
