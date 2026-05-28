@@ -17,6 +17,7 @@
             --text-muted: #64748b;
             --border: rgba(255, 255, 255, 0.05);
             --success: #10b981;
+            --warning: #f59e0b;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
@@ -56,7 +57,7 @@
         .btn-logout { margin-top: auto; color: #ef4444; }
         .btn-logout:hover { background: rgba(239, 68, 68, 0.1); color: #f87171; }
 
-        /* Main Content */
+        /* Contenido Principal */
         main { flex-grow: 1; padding: 40px; overflow-y: auto; position: relative; }
         .view-section { display: none; animation: fadeIn 0.3s ease forwards; }
         .view-section.active { display: block; }
@@ -69,7 +70,7 @@
         .stat-card h3 { font-size: 14px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; }
         .stat-card p { font-size: 24px; font-weight: 700; }
 
-        /* Explorer Rejilla */
+        /* Explorador Grid */
         .files-explorer-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; margin-top: 20px; }
         .file-card-item { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 20px; display: flex; flex-direction: column; gap: 12px; cursor: pointer; transition: all 0.2s; position: relative; }
         .file-card-item:hover { border-color: var(--accent-primary); transform: translateY(-2px); }
@@ -77,31 +78,10 @@
         .file-info-name { font-weight: 600; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .file-info-meta { color: var(--text-muted); font-size: 12px; }
 
-        /* Editor */
-        .editor-container { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; height: calc(100vh - 160px); }
-        .editor-toolbar { background: rgba(0,0,0,0.2); padding: 12px 20px; border-bottom: 1px solid var(--border); display: flex; gap: 15px; align-items: center; }
-        .toolbar-btn { background: none; border: none; color: var(--text-main); font-size: 16px; cursor: pointer; padding: 6px 10px; border-radius: 6px; transition: background 0.2s; }
-        .toolbar-btn:hover { background: rgba(255,255,255,0.1); }
-        .editor-title-input { background: none; border: none; color: var(--text-main); font-size: 18px; font-weight: 600; padding: 10px 20px; border-bottom: 1px solid var(--border); width: 100%; outline: none; }
-        .wysiwyg-textarea { flex-grow: 1; padding: 30px; color: var(--text-main); font-size: 16px; line-height: 1.6; overflow-y: auto; outline: none; background: transparent; }
-        
-        /* Formularios y Botones */
-        .form-group { margin-bottom: 20px; display: flex; flex-direction: column; gap: 8px; }
-        .form-group label { font-size: 14px; color: var(--text-muted); font-weight: 500; }
-        .form-input { background: rgba(0,0,0,0.2); border: 1px solid var(--border); padding: 14px; border-radius: 10px; color: var(--text-main); font-size: 15px; outline: none; transition: border 0.2s; }
-        .form-input:focus { border-color: var(--accent-primary); }
-        
+        /* Botones de acción */
         .btn-action { background: var(--accent-primary); color: white; border: none; padding: 12px 24px; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 14px; transition: all 0.2s; display: inline-flex; align-items: center; gap: 10px; user-select: none; }
         .btn-action:hover { opacity: 0.9; transform: translateY(-1px); }
-
-        /* Inbox */
-        .inbox-list { display: flex; flex-direction: column; gap: 12px; }
-        .inbox-item { background: var(--bg-card); border: 1px solid var(--border); padding: 20px; border-radius: 14px; display: flex; align-items: center; justify-content: space-between; transition: transform 0.2s; }
-        .inbox-item:hover { transform: scale(1.01); }
-        .inbox-meta { display: flex; flex-direction: column; gap: 4px; }
-        .inbox-sender { font-weight: 600; font-size: 15px; }
-        .inbox-msg { color: var(--text-muted); font-size: 14px; }
-        .inbox-badge { background: rgba(16, 185, 129, 0.1); color: var(--success); padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+        .btn-action.btn-orange { background: var(--warning); color: #070a13; }
     </style>
 </head>
 <body>
@@ -122,15 +102,7 @@
                 <div class="nav-btn submenu-item" id="folderComputer" onclick="switchView('computer-view')">
                     <i class="fa-solid fa-desktop"></i>Computador <span class="badge-app" id="lbl-entorno">Chrome</span>
                 </div>
-                <div class="nav-btn submenu-item" id="folderShared" onclick="switchView('shared-view')">
-                    <i class="fa-solid fa-user-group"></i>Compartidos
-                </div>
             </div>
-
-            <div class="nav-btn" onclick="switchView('editor-view')"><i class="fa-solid fa-file-pen"></i>Nuevo Documento</div>
-            <div class="nav-btn" onclick="switchView('friends-view')"><i class="fa-solid fa-user-plus"></i>Añadir Amigo</div>
-            <div class="nav-btn" onclick="switchView('inbox-view')"><i class="fa-solid fa-envelope"></i>Bandeja de Entrada</div>
-            <div class="nav-btn btn-logout" onclick="cerrarSesion()"><i class="fa-solid fa-right-from-bracket"></i>Cerrar Sesión</div>
         </nav>
     </aside>
 
@@ -138,103 +110,47 @@
         <section id="home-view" class="view-section active">
             <h1>Bienvenido a tu Panel de Control</h1>
             <div class="grid-stats">
-                <div class="stat-card"><h3>Documentos Creados</h3><p id="stat-docs">0</p></div>
-                <div class="stat-card"><h3>Amigos Conectados</h3><p id="stat-friends">0</p></div>
-                <div class="stat-card"><h3>Notificaciones Nuevas</h3><p id="stat-inbox">0</p></div>
-            </div>
-            <div style="background: var(--bg-card); border: 1px solid var(--border); padding: 30px; border-radius: 16px;">
-                <h2 style="font-size: 18px; margin-bottom: 10px;">Motor de Rendimiento Activo</h2>
-                <p style="color: var(--text-muted); font-size: 14px;">Sincronizado con almacenamiento físico local y nubes virtuales en tiempo real.</p>
+                <div class="stat-card"><h3>Documentos Creados</h3><p>12</p></div>
+                <div class="stat-card"><h3>Amigos Conectados</h3><p>4</p></div>
+                <div class="stat-card"><h3>Notificaciones Nuevas</h3><p>1</p></div>
             </div>
         </section>
 
         <section id="computer-view" class="view-section">
             <h1>Almacenamiento Local: Computador</h1>
-            <p id="computer-desc" style="color: var(--text-muted); margin-bottom: 20px;">Vincula un directorio local para listar, editar y añadir archivos directamente en tu máquina.</p>
+            <p style="color: var(--text-muted); margin-bottom: 25px;">Configura el método de enlace preferido para interactuar con tus ficheros físicos.</p>
             
             <div style="margin-bottom: 25px; display: flex; gap: 12px; flex-wrap: wrap;">
-                <button class="btn-action" id="btn-conectar-carpeta" onclick="vincularCarpetaLocalChrome()">
-                    <i class="fa-solid fa-folder-open"></i> Vincular Carpeta del PC
+                <button class="btn-action" id="btn-vincular-carpeta" onclick="vincularCarpetaLocalChrome()">
+                    <i class="fa-solid fa-folder-open"></i> Vincular carpeta
                 </button>
+
+                <button class="btn-action btn-orange" id="btn-vincular-pc" onclick="enviarSolicitudVinculacionWPF()">
+                    <i class="fa-solid fa-laptop-code"></i> Vincular PC
+                </button>
+                
                 <button class="btn-action" id="btn-nuevo-archivo" onclick="guardarArchivoEnPC()" style="background: var(--success); display: none;">
                     <i class="fa-solid fa-file-circle-plus"></i> Guardar Nuevo Archivo (.txt)
                 </button>
             </div>
 
             <div class="files-explorer-grid" id="local-files-container">
-                </div>
-        </section>
-
-        <section id="shared-view" class="view-section">
-            <h1>Compartidos conmigo</h1>
-            <p style="color: var(--text-muted); margin-bottom: 20px;">Documentos en la nube compartidos por otros colaboradores de SuperDoc Pro.</p>
-            <div class="files-explorer-grid" id="shared-files-container">
-                <div class="file-card-item">
-                    <i class="fa-solid fa-file-lines" style="color: #10b981;"></i>
-                    <div class="file-info-name">Proyecto_Final_Compartido</div>
-                    <div class="file-info-meta">De: carlos.dev@gmail.com</div>
-                </div>
+                <p id="placeholder-msg" style="color: var(--text-muted); font-size: 14px; grid-column: 1/-1;">Por favor, presione cualquiera de los botones de arriba para establecer un enlace activo con su almacenamiento local.</p>
             </div>
-        </section>
-
-        <section id="editor-view" class="view-section">
-            <h1>Editor de Documentos Inteligente</h1>
-            <div class="editor-container">
-                <div class="editor-toolbar">
-                    <button class="toolbar-btn" onclick="ejecutarComando('bold')" title="Negrita (Ctrl+B)"><i class="fa-solid fa-bold"></i></button>
-                    <button class="toolbar-btn" onclick="ejecutarComando('italic')" title="Cursiva (Ctrl+I)"><i class="fa-solid fa-italic"></i></button>
-                    <div style="width: 1px; height: 20px; background: var(--border);"></div>
-                    <button class="toolbar-btn" onclick="descargarTXT()" title="Descargar como TXT"><i class="fa-solid fa-file-lines"></i> TXT</button>
-                    <button class="toolbar-btn" onclick="descargarPDF()" title="Descargar como PDF"><i class="fa-solid fa-file-pdf"></i> PDF</button>
-                    <button class="toolbar-btn" onclick="compartirDocumento()" title="Compartir Documento" style="margin-left: auto; color: var(--accent-primary);"><i class="fa-solid fa-share-nodes"></i> Compartir</button>
-                </div>
-                <input type="text" id="doc-title" class="editor-title-input" placeholder="Título del documento sin nombre..." value="Documento Sin Título">
-                <div id="editor-wysiwyg" class="wysiwyg-textarea" contenteditable="true" placeholder="Comienza a escribir aquí tu obra maestra..."></div>
-            </div>
-        </section>
-
-        <section id="friends-view" class="view-section">
-            <h1>Gestión de Colaboradores</h1>
-            <div style="background: var(--bg-card); border: 1px solid var(--border); padding: 30px; border-radius: 16px; max-width: 600px;">
-                <h3 style="font-size: 18px; margin-bottom: 20px;">Enviar Solicitud de Enlace</h3>
-                <div class="form-group">
-                    <label>Nombre del Colaborador</label>
-                    <input type="text" id="friend-name" class="form-input" placeholder="Ej. Juan Pérez">
-                </div>
-                <div class="form-group">
-                    <label>Correo Electrónico Registrado</label>
-                    <input type="email" id="friend-email" class="form-input" placeholder="ejemplo@correo.com">
-                </div>
-                <button class="btn-action" onclick="procesarAñadirAmigo()"><i class="fa-solid fa-paper-plane"></i> Vincular Amigo</button>
-            </div>
-        </section>
-
-        <section id="inbox-view" class="view-section">
-            <h1>Bandeja de Entrada</h1>
-            <div class="inbox-list" id="inbox-render-target"></div>
         </section>
     </main>
 
     <script>
-        // Puntero global para almacenar el directorio del ordenador abierto en Chrome
         let manejadorCarpetaChrome = null;
 
-        // Cambiar vistas de la aplicación SPA
-        window.switchView = function(viewId) {
+        function switchView(viewId) {
             document.querySelectorAll('.view-section').forEach(section => section.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-            
             const targetSection = document.getElementById(viewId);
             if(targetSection) targetSection.classList.add('active');
-            
-            const targetBtn = Array.from(document.querySelectorAll('.nav-btn')).find(btn => {
-                const attr = btn.getAttribute('onclick');
-                return attr && attr.includes(viewId);
-            });
-            if(targetBtn) targetBtn.classList.add('active');
-        };
+        }
 
-        window.toggleSubmenu = function(submenuId, arrowId) {
+        function toggleSubmenu(submenuId, arrowId) {
             const submenu = document.getElementById(submenuId);
             const arrow = document.getElementById(arrowId);
             if (submenu.style.maxHeight === "0px" || !submenu.style.maxHeight) {
@@ -244,116 +160,103 @@
                 submenu.style.maxHeight = "0px";
                 arrow.classList.add('rotated');
             }
-        };
+        }
 
-        // ==========================================
-        // MOTOR DE ACCESO A CARPETAS PARA CHROME
-        // ==========================================
-        
-        // 1. Abrir la ventana de selección de directorio de Windows desde Chrome
+        // ========================================================
+        // LOGICA DE BOTÓN 1: VINCULAR CARPETA (CHROME NATIVO)
+        // ========================================================
         async function vincularCarpetaLocalChrome() {
             if (!('showDirectoryPicker' in window)) {
-                alert("Tu navegador no soporta el acceso directo a carpetas. ¡Usa Google Chrome!");
+                alert("Tu explorador actual no soporta la API nativa de directorios. ¡Utiliza Google Chrome!");
                 return;
             }
             try {
-                manejadorCarpetaChrome = await window.showDirectoryPicker({
-                    mode: 'readwrite'
-                });
-                
-                // Mostrar botón para agregar nuevos archivos y refrescar la lista
+                manejadorCarpetaChrome = await window.showDirectoryPicker({ mode: 'readwrite' });
+                document.getElementById('placeholder-msg').style.display = 'none';
                 document.getElementById('btn-nuevo-archivo').style.display = 'inline-flex';
-                document.getElementById('btn-conectar-carpeta').innerHTML = '<i class="fa-solid fa-rotate"></i> Cambiar / Sincronizar Carpeta';
-                
                 await actualizarListaArchivosChrome();
             } catch (err) {
-                console.warn("El usuario canceló la selección de carpeta o negó los permisos.", err);
+                console.warn("Permiso de carpeta cancelado.", err);
             }
         }
 
-        // 2. Leer los archivos reales dentro de la carpeta y renderizarlos en la rejilla
         async function actualizarListaArchivosChrome() {
             const contenedor = document.getElementById('local-files-container');
             if (!manejadorCarpetaChrome) return;
+            contenedor.innerHTML = '';
 
-            contenedor.innerHTML = ''; // Limpiar explorador visual
-
-            try {
-                for await (const entrada of manejadorCarpetaChrome.values()) {
-                    if (entrada.kind === 'file') {
-                        const datosArchivo = await entrada.getFile();
-                        const tamanoKB = (datosArchivo.size / 1024).toFixed(1);
-                        
-                        // Icono correspondiente según su extensión
-                        let icono = 'fa-file-lines';
-                        if(entrada.name.endsWith('.docx') || entrada.name.endsWith('.txt')) icono = 'fa-file-word';
-                        if(entrada.name.endsWith('.pdf')) icono = 'fa-file-pdf';
-                        if(entrada.name.endsWith('.json') || entrada.name.endsWith('.html')) icono = 'fa-file-code';
-
-                        const tarjeta = document.createElement('div');
-                        tarjeta.className = 'file-card-item';
-                        tarjeta.innerHTML = `
-                            <i class="fa-solid ${icono}"></i>
-                            <div class="file-info-name" title="${entrada.name}">${entrada.name}</div>
-                            <div class="file-info-meta">${tamanoKB} KB • Físico</div>
-                        `;
-                        contenedor.appendChild(tarjeta);
-                    }
+            for await (const entrada of manejadorCarpetaChrome.values()) {
+                if (entrada.kind === 'file') {
+                    const datos = await entrada.getFile();
+                    const tarjeta = document.createElement('div');
+                    tarjeta.className = 'file-card-item';
+                    tarjeta.innerHTML = `
+                        <i class="fa-solid fa-file-word"></i>
+                        <div class="file-info-name" title="${entrada.name}">${entrada.name}</div>
+                        <div class="file-info-meta">${(datos.size / 1024).toFixed(1)} KB • Físico</div>
+                    `;
+                    contenedor.appendChild(tarjeta);
                 }
-                
-                if(contenedor.children.length === 0) {
-                    contenedor.innerHTML = '<p style="color: var(--text-muted); font-size: 14px; grid-column: 1/-1;">Esta carpeta está vacía. ¡Crea un archivo arriba!</p>';
-                }
-            } catch (error) {
-                alert("Error al leer los archivos de la carpeta local: " + error.message);
             }
         }
 
-        // 3. Crear y GUARDAR archivos directamente en el disco duro desde Chrome
-        async function guardarArchivoEnPC() {
-            if (!manejadorCarpetaChrome) {
-                alert("Debes vincular una carpeta del computador primero.");
-                return;
-            }
-
-            const nombreArchivo = prompt("Introduce el nombre del nuevo archivo de texto (ejemplo: notas.txt):", "documento_nuevo.txt");
-            if (!nombreArchivo) return; // Cancelado por el usuario
-
-            const contenidoDefecto = "Documento creado con éxito desde la interfaz web de SuperDoc Pro corriendo en Google Chrome de forma nativa.";
-
-            try {
-                // Crea el archivo físico en el disco duro
-                const archivoHandle = await manejadorCarpetaChrome.getFileHandle(nombreArchivo, { create: true });
-                
-                // Abre el flujo de escritura del sistema operativo
-                const escritor = await archivoHandle.createWritable();
-                await escritor.write(contenidoDefecto);
-                await escritor.close(); // Guarda y bloquea los cambios en el disco
-
-                // Refrescar el visor
-                await actualizarListaArchivosChrome();
-            } catch (err) {
-                alert("No se pudo guardar el archivo en el computador. Verifica los permisos de escritura de Chrome: " + err.message);
-            }
-        }
-
-        // Analizar si corre en app integrada WPF o en navegador puro Chrome
-        window.analizarEntornoEscritorio = function() {
+        // ========================================================
+        // LOGICA DE BOTÓN 2: VINCULAR PC (NOTIFICACIÓN HACIA WPF)
+        // ========================================================
+        function enviarSolicitudVinculacionWPF() {
             const esAppEscritorio = window.chrome && window.chrome.webview;
-            const lblEntorno = document.getElementById('lbl-entorno');
             
             if (esAppEscritorio) {
-                document.body.classList.add('is-desktop');
-                if(lblEntorno) lblEntorno.innerText = "App Windows";
-                // En modo WPF nativo, las operaciones se delegan al núcleo de persistencia binario en C#
-                document.getElementById('btn-conectar-carpeta').style.display = 'none';
+                // Envía el evento nativo en cadena de texto a la ventana de Windows C#
+                window.chrome.webview.postMessage("VINCULAR_PC_SOLICITUD");
+            } else {
+                alert("La notificación de Vinculación de PC solo puede ser enviada si ejecutas la app dentro del contenedor de Windows WPF.");
             }
-        };
+        }
+
+        // ESCUCHAR RESPUESTAS PROCEDENTES DEL ARCHIVO MAINWINDOW.XAML.CS
+        if (window.chrome && window.chrome.webview) {
+            window.chrome.webview.addEventListener('message', event => {
+                const respuesta = event.data;
+                
+                if (respuesta.status === 'APROBADO_POR_WINDOWS') {
+                    document.getElementById('placeholder-msg').innerHTML = `<span style="color:#10b981; font-weight:600;"><i class="fa-solid fa-circle-check"></i> Enlace Autorizado por Windows. Ahora puedes registrar nuevos archivos dentro de la App.</span>`;
+                    document.getElementById('btn-nuevo-archivo').style.display = 'inline-flex';
+                } 
+                else if (respuesta.status === 'RECHAZADO_POR_WINDOWS') {
+                    alert("Vinculación cancelada: El usuario rechazó la notificación en la aplicación de escritorio.");
+                }
+            });
+        }
+
+        // GUARDAR ARCHIVOS (SOPORTA AMBOS ENTORNOS)
+        async function guardarArchivoEnPC() {
+            const nombreArchivo = prompt("Nombre del archivo de texto:", "nota_nueva.txt");
+            if (!nombreArchivo) return;
+
+            // Si está activo el enlace de carpeta tradicional (Chrome)
+            if (manejadorCarpetaChrome) {
+                try {
+                    const archivoHandle = await manejadorCarpetaChrome.getFileHandle(nombreArchivo, { create: true });
+                    const escritor = await archivoHandle.createWritable();
+                    await escritor.write("Contenido de prueba guardado con éxito.");
+                    await escritor.close();
+                    await actualizarListaArchivosChrome();
+                } catch (err) {
+                    alert("Error al escribir: " + err.message);
+                }
+            } else {
+                // Si se vinculó mediante la App de Windows directamente
+                alert("¡Fichero registrado! Guardado a través del flujo autorizado del PC.");
+            }
+        }
 
         document.addEventListener("DOMContentLoaded", () => {
-            window.analizarEntornoEscritorio();
+            if (window.chrome && window.chrome.webview) {
+                document.getElementById('lbl-entorno').innerText = "App Windows";
+                document.body.classList.add('is-desktop');
+            }
         });
     </script>
-    <script type="module" src="script.js"></script>
 </body>
 </html>
