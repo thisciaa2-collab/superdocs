@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SuperDoc Pro - Workspace</title>
+    <link rel="icon" type="image/png" href="favicon36x36.png" sizes="36x36">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         :root {
@@ -21,7 +22,6 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background: var(--bg-dark); color: var(--text-main); display: flex; height: 100vh; overflow: hidden; }
 
-        /* Estilos condicionales premium si se ejecuta en modo App */
         body.is-desktop {
             background: radial-gradient(circle at top right, #14112e, var(--bg-dark));
         }
@@ -33,8 +33,6 @@
         .brand h2 { font-size: 20px; font-weight: 700; letter-spacing: 0.5px; }
         
         nav { display: flex; flex-direction: column; gap: 8px; flex-grow: 1; overflow-y: auto; }
-        
-        /* Ajuste de scrollbar invisible para el menú */
         nav::-webkit-scrollbar { width: 0px; background: transparent; }
 
         .nav-btn { display: flex; align-items: center; gap: 14px; padding: 14px 18px; color: var(--text-muted); border-radius: 12px; cursor: pointer; transition: all 0.2s ease; font-weight: 500; text-decoration: none; user-select: none; }
@@ -42,7 +40,7 @@
         .nav-btn.active { color: var(--text-main); background: var(--accent-primary); box-shadow: 0 4px 20px var(--accent-glow); }
         .nav-btn i { font-size: 18px; width: 20px; text-align: center; }
 
-        /* Estilos Nuevos para la Sección de Carpetas Avanzadas */
+        /* Carpetas */
         .folder-section-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; color: var(--text-muted); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; cursor: pointer; margin-top: 10px; user-select: none; }
         .folder-section-header:hover { color: var(--text-main); }
         .folder-section-header div { display: flex; align-items: center; gap: 14px; }
@@ -52,37 +50,34 @@
 
         .submenu-container { display: flex; flex-direction: column; gap: 4px; padding-left: 16px; overflow: hidden; transition: max-height 0.3s ease-in-out; max-height: 200px; }
         .submenu-item { padding: 11px 14px; font-size: 14px; color: #94a3b8; }
-        .submenu-item i { font-size: 15px; }
         
-        .badge-app { background: rgba(99, 102, 241, 0.15); color: #818cf8; font-size: 10px; padding: 2px 6px; border-radius: 6px; font-weight: 600; margin-left: auto; border: 1px solid rgba(99, 102, 241, 0.2); text-transform: uppercase; }
+        .badge-app { background: rgba(16, 185, 129, 0.15); color: #34d399; font-size: 10px; padding: 2px 6px; border-radius: 6px; font-weight: 600; margin-left: auto; border: 1px solid rgba(16, 185, 129, 0.2); text-transform: uppercase; }
 
         .btn-logout { margin-top: auto; color: #ef4444; }
         .btn-logout:hover { background: rgba(239, 68, 68, 0.1); color: #f87171; }
 
-        /* Contenedor Principal */
+        /* Main Content */
         main { flex-grow: 1; padding: 40px; overflow-y: auto; position: relative; }
         .view-section { display: none; animation: fadeIn 0.3s ease forwards; }
         .view-section.active { display: block; }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
         h1 { font-size: 28px; font-weight: 700; margin-bottom: 24px; }
 
-        /* Tablas e Interfaces de Contenido */
         .grid-stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 20px; margin-bottom: 30px; }
         .stat-card { background: var(--bg-card); border: 1px solid var(--border); padding: 24px; border-radius: 16px; }
         .stat-card h3 { font-size: 14px; color: var(--text-muted); text-transform: uppercase; margin-bottom: 8px; }
         .stat-card p { font-size: 24px; font-weight: 700; }
 
-        /* Explorer Files Layout */
-        .files-explorer-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-top: 20px; }
-        .file-card-item { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 20px; display: flex; flex-direction: column; gap: 12px; cursor: pointer; transition: all 0.2s; }
+        /* Explorer Rejilla */
+        .files-explorer-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; margin-top: 20px; }
+        .file-card-item { background: var(--bg-card); border: 1px solid var(--border); border-radius: 14px; padding: 20px; display: flex; flex-direction: column; gap: 12px; cursor: pointer; transition: all 0.2s; position: relative; }
         .file-card-item:hover { border-color: var(--accent-primary); transform: translateY(-2px); }
         .file-card-item i { font-size: 32px; color: var(--accent-primary); }
         .file-info-name { font-weight: 600; font-size: 15px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
         .file-info-meta { color: var(--text-muted); font-size: 12px; }
 
-        /* Editor de Documentos Premium */
+        /* Editor */
         .editor-container { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; height: calc(100vh - 160px); }
         .editor-toolbar { background: rgba(0,0,0,0.2); padding: 12px 20px; border-bottom: 1px solid var(--border); display: flex; gap: 15px; align-items: center; }
         .toolbar-btn { background: none; border: none; color: var(--text-main); font-size: 16px; cursor: pointer; padding: 6px 10px; border-radius: 6px; transition: background 0.2s; }
@@ -90,15 +85,16 @@
         .editor-title-input { background: none; border: none; color: var(--text-main); font-size: 18px; font-weight: 600; padding: 10px 20px; border-bottom: 1px solid var(--border); width: 100%; outline: none; }
         .wysiwyg-textarea { flex-grow: 1; padding: 30px; color: var(--text-main); font-size: 16px; line-height: 1.6; overflow-y: auto; outline: none; background: transparent; }
         
-        /* Modales / Formularios */
+        /* Formularios y Botones */
         .form-group { margin-bottom: 20px; display: flex; flex-direction: column; gap: 8px; }
         .form-group label { font-size: 14px; color: var(--text-muted); font-weight: 500; }
         .form-input { background: rgba(0,0,0,0.2); border: 1px solid var(--border); padding: 14px; border-radius: 10px; color: var(--text-main); font-size: 15px; outline: none; transition: border 0.2s; }
         .form-input:focus { border-color: var(--accent-primary); }
-        .btn-action { background: var(--accent-primary); color: white; border: none; padding: 14px 28px; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 15px; transition: opacity 0.2s; display: inline-flex; align-items: center; gap: 10px; }
-        .btn-action:hover { opacity: 0.9; }
+        
+        .btn-action { background: var(--accent-primary); color: white; border: none; padding: 12px 24px; border-radius: 10px; cursor: pointer; font-weight: 600; font-size: 14px; transition: all 0.2s; display: inline-flex; align-items: center; gap: 10px; user-select: none; }
+        .btn-action:hover { opacity: 0.9; transform: translateY(-1px); }
 
-        /* Bandeja de Entrada (Inbox) */
+        /* Inbox */
         .inbox-list { display: flex; flex-direction: column; gap: 12px; }
         .inbox-item { background: var(--bg-card); border: 1px solid var(--border); padding: 20px; border-radius: 14px; display: flex; align-items: center; justify-content: space-between; transition: transform 0.2s; }
         .inbox-item:hover { transform: scale(1.01); }
@@ -123,8 +119,8 @@
                 <i class="fa-solid fa-chevron-down arrow-icon" id="arrowIcon"></i>
             </div>
             <div class="submenu-container" id="foldersSubmenu">
-                <div class="nav-btn submenu-item" id="folderComputer" onclick="switchView('computer-view')" style="display: none;">
-                    <i class="fa-solid fa-desktop"></i>Computador <span class="badge-app">App</span>
+                <div class="nav-btn submenu-item" id="folderComputer" onclick="switchView('computer-view')">
+                    <i class="fa-solid fa-desktop"></i>Computador <span class="badge-app" id="lbl-entorno">Chrome</span>
                 </div>
                 <div class="nav-btn submenu-item" id="folderShared" onclick="switchView('shared-view')">
                     <i class="fa-solid fa-user-group"></i>Compartidos
@@ -148,25 +144,25 @@
             </div>
             <div style="background: var(--bg-card); border: 1px solid var(--border); padding: 30px; border-radius: 16px;">
                 <h2 style="font-size: 18px; margin-bottom: 10px;">Motor de Rendimiento Activo</h2>
-                <p style="color: var(--text-muted); font-size: 14px;">Sincronizado nativamente con el núcleo de persistencia local en Windows mediante cifrado binario.</p>
+                <p style="color: var(--text-muted); font-size: 14px;">Sincronizado con almacenamiento físico local y nubes virtuales en tiempo real.</p>
             </div>
         </section>
 
         <section id="computer-view" class="view-section">
             <h1>Almacenamiento Local: Computador</h1>
-            <p style="color: var(--text-muted); margin-bottom: 20px;">Archivos guardados físicamente en el disco duro de tu ordenador mediante la aplicación de escritorio.</p>
-            <div class="files-explorer-grid" id="local-files-container">
-                <div class="file-card-item">
-                    <i class="fa-solid fa-file-word"></i>
-                    <div class="file-info-name">Contrato_Servicios.docx</div>
-                    <div class="file-info-meta">C:/SuperDocs/Docs • Hace 2 horas</div>
-                </div>
-                <div class="file-card-item">
-                    <i class="fa-solid fa-file-code"></i>
-                    <div class="file-info-name">Configuracion_Local.json</div>
-                    <div class="file-info-meta">C:/SuperDocs/Config • Ayer</div>
-                </div>
+            <p id="computer-desc" style="color: var(--text-muted); margin-bottom: 20px;">Vincula un directorio local para listar, editar y añadir archivos directamente en tu máquina.</p>
+            
+            <div style="margin-bottom: 25px; display: flex; gap: 12px; flex-wrap: wrap;">
+                <button class="btn-action" id="btn-conectar-carpeta" onclick="vincularCarpetaLocalChrome()">
+                    <i class="fa-solid fa-folder-open"></i> Vincular Carpeta del PC
+                </button>
+                <button class="btn-action" id="btn-nuevo-archivo" onclick="guardarArchivoEnPC()" style="background: var(--success); display: none;">
+                    <i class="fa-solid fa-file-circle-plus"></i> Guardar Nuevo Archivo (.txt)
+                </button>
             </div>
+
+            <div class="files-explorer-grid" id="local-files-container">
+                </div>
         </section>
 
         <section id="shared-view" class="view-section">
@@ -220,7 +216,10 @@
     </main>
 
     <script>
-        // Lógica estructural de navegación SPA cambiada a soporte múltiple
+        // Puntero global para almacenar el directorio del ordenador abierto en Chrome
+        let manejadorCarpetaChrome = null;
+
+        // Cambiar vistas de la aplicación SPA
         window.switchView = function(viewId) {
             document.querySelectorAll('.view-section').forEach(section => section.classList.remove('active'));
             document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
@@ -228,7 +227,6 @@
             const targetSection = document.getElementById(viewId);
             if(targetSection) targetSection.classList.add('active');
             
-            // Ilumina el botón del menú padre o hijo de forma correcta
             const targetBtn = Array.from(document.querySelectorAll('.nav-btn')).find(btn => {
                 const attr = btn.getAttribute('onclick');
                 return attr && attr.includes(viewId);
@@ -236,7 +234,6 @@
             if(targetBtn) targetBtn.classList.add('active');
         };
 
-        // Animación dinámica de acordeón de carpetas
         window.toggleSubmenu = function(submenuId, arrowId) {
             const submenu = document.getElementById(submenuId);
             const arrow = document.getElementById(arrowId);
@@ -249,18 +246,110 @@
             }
         };
 
-        // Verificación activa de entorno nativo Windows (WebView2)
+        // ==========================================
+        // MOTOR DE ACCESO A CARPETAS PARA CHROME
+        // ==========================================
+        
+        // 1. Abrir la ventana de selección de directorio de Windows desde Chrome
+        async function vincularCarpetaLocalChrome() {
+            if (!('showDirectoryPicker' in window)) {
+                alert("Tu navegador no soporta el acceso directo a carpetas. ¡Usa Google Chrome!");
+                return;
+            }
+            try {
+                manejadorCarpetaChrome = await window.showDirectoryPicker({
+                    mode: 'readwrite'
+                });
+                
+                // Mostrar botón para agregar nuevos archivos y refrescar la lista
+                document.getElementById('btn-nuevo-archivo').style.display = 'inline-flex';
+                document.getElementById('btn-conectar-carpeta').innerHTML = '<i class="fa-solid fa-rotate"></i> Cambiar / Sincronizar Carpeta';
+                
+                await actualizarListaArchivosChrome();
+            } catch (err) {
+                console.warn("El usuario canceló la selección de carpeta o negó los permisos.", err);
+            }
+        }
+
+        // 2. Leer los archivos reales dentro de la carpeta y renderizarlos en la rejilla
+        async function actualizarListaArchivosChrome() {
+            const contenedor = document.getElementById('local-files-container');
+            if (!manejadorCarpetaChrome) return;
+
+            contenedor.innerHTML = ''; // Limpiar explorador visual
+
+            try {
+                for await (const entrada of manejadorCarpetaChrome.values()) {
+                    if (entrada.kind === 'file') {
+                        const datosArchivo = await entrada.getFile();
+                        const tamanoKB = (datosArchivo.size / 1024).toFixed(1);
+                        
+                        // Icono correspondiente según su extensión
+                        let icono = 'fa-file-lines';
+                        if(entrada.name.endsWith('.docx') || entrada.name.endsWith('.txt')) icono = 'fa-file-word';
+                        if(entrada.name.endsWith('.pdf')) icono = 'fa-file-pdf';
+                        if(entrada.name.endsWith('.json') || entrada.name.endsWith('.html')) icono = 'fa-file-code';
+
+                        const tarjeta = document.createElement('div');
+                        tarjeta.className = 'file-card-item';
+                        tarjeta.innerHTML = `
+                            <i class="fa-solid ${icono}"></i>
+                            <div class="file-info-name" title="${entrada.name}">${entrada.name}</div>
+                            <div class="file-info-meta">${tamanoKB} KB • Físico</div>
+                        `;
+                        contenedor.appendChild(tarjeta);
+                    }
+                }
+                
+                if(contenedor.children.length === 0) {
+                    contenedor.innerHTML = '<p style="color: var(--text-muted); font-size: 14px; grid-column: 1/-1;">Esta carpeta está vacía. ¡Crea un archivo arriba!</p>';
+                }
+            } catch (error) {
+                alert("Error al leer los archivos de la carpeta local: " + error.message);
+            }
+        }
+
+        // 3. Crear y GUARDAR archivos directamente en el disco duro desde Chrome
+        async function guardarArchivoEnPC() {
+            if (!manejadorCarpetaChrome) {
+                alert("Debes vincular una carpeta del computador primero.");
+                return;
+            }
+
+            const nombreArchivo = prompt("Introduce el nombre del nuevo archivo de texto (ejemplo: notas.txt):", "documento_nuevo.txt");
+            if (!nombreArchivo) return; // Cancelado por el usuario
+
+            const contenidoDefecto = "Documento creado con éxito desde la interfaz web de SuperDoc Pro corriendo en Google Chrome de forma nativa.";
+
+            try {
+                // Crea el archivo físico en el disco duro
+                const archivoHandle = await manejadorCarpetaChrome.getFileHandle(nombreArchivo, { create: true });
+                
+                // Abre el flujo de escritura del sistema operativo
+                const escritor = await archivoHandle.createWritable();
+                await escritor.write(contenidoDefecto);
+                await escritor.close(); // Guarda y bloquea los cambios en el disco
+
+                // Refrescar el visor
+                await actualizarListaArchivosChrome();
+            } catch (err) {
+                alert("No se pudo guardar el archivo en el computador. Verifica los permisos de escritura de Chrome: " + err.message);
+            }
+        }
+
+        // Analizar si corre en app integrada WPF o en navegador puro Chrome
         window.analizarEntornoEscritorio = function() {
             const esAppEscritorio = window.chrome && window.chrome.webview;
-            const folderComputer = document.getElementById('folderComputer');
+            const lblEntorno = document.getElementById('lbl-entorno');
             
             if (esAppEscritorio) {
                 document.body.classList.add('is-desktop');
-                if(folderComputer) folderComputer.style.display = 'flex';
+                if(lblEntorno) lblEntorno.innerText = "App Windows";
+                // En modo WPF nativo, las operaciones se delegan al núcleo de persistencia binario en C#
+                document.getElementById('btn-conectar-carpeta').style.display = 'none';
             }
         };
 
-        // Inicialización inmediata al renderizar el DOM
         document.addEventListener("DOMContentLoaded", () => {
             window.analizarEntornoEscritorio();
         });
