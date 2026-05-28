@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SuperDoc Pro - Explorador de Carpetas</title>
+    <link rel="icon" type="image/png" href="favicon36x36.png" sizes="36x36">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
         :root {
@@ -25,13 +26,11 @@
         .explorer-title i { font-size: 28px; color: var(--accent-primary); }
         .explorer-title h1 { font-size: 26px; font-weight: 700; }
 
-        /* Barra de búsqueda superior */
         .search-box-wrapper { position: relative; display: flex; align-items: center; width: 100%; max-width: 360px; }
         .search-box-wrapper i { position: absolute; left: 16px; color: var(--text-muted); }
         .search-input { width: 100%; background: var(--bg-card); border: 1px solid var(--border); padding: 12px 16px 12px 46px; border-radius: 12px; color: var(--text-main); font-size: 14px; outline: none; transition: all 0.2s; }
-        .search-input:focus { border-color: var(--accent-primary); box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15); }
+        .search-input:focus { border-color: var(--accent-primary); }
 
-        /* Categorías principales del explorador */
         .explorer-sections-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 24px; margin-bottom: 40px; }
         .category-block { background: var(--bg-card); border: 1px solid var(--border); border-radius: 18px; padding: 24px; display: flex; flex-direction: column; gap: 20px; }
         .category-block-header { display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border); padding-bottom: 14px; }
@@ -41,10 +40,9 @@
         .status-dot.active { background: var(--success); animation: pulse 2s infinite; }
         @keyframes pulse { 0% { opacity: 0.4; } 50% { opacity: 1; } 100% { opacity: 0.4; } }
 
-        /* Lista de archivos */
-        .file-list { display: flex; flex-direction: column; gap: 8px; }
-        .file-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: rgba(0,0,0,0.15); border: 1px solid var(--border); border-radius: 10px; cursor: pointer; transition: all 0.2s; text-decoration: none; color: inherit; }
-        .file-row:hover { border-color: var(--accent-primary); background: rgba(255,255,255,0.01); transform: translateX(2px); }
+        .file-list { display: flex; flex-direction: column; gap: 8px; max-height: 300px; overflow-y: auto; }
+        .file-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 16px; background: rgba(0,0,0,0.15); border: 1px solid var(--border); border-radius: 10px; cursor: pointer; transition: all 0.2s; }
+        .file-row:hover { border-color: var(--accent-primary); }
         
         .file-main-info { display: flex; align-items: center; gap: 12px; max-width: 70%; }
         .file-main-info i { font-size: 18px; color: var(--accent-primary); }
@@ -52,10 +50,10 @@
         
         .file-meta-side { font-size: 12px; color: var(--text-muted); text-align: right; }
 
-        /* Alerta de sincronización desvinculada */
-        .alert-unlinked { background: rgba(245, 158, 11, 0.05); border: 1px solid rgba(245, 158, 11, 0.15); color: #fcd34d; padding: 16px; border-radius: 12px; font-size: 14px; display: flex; align-items: center; gap: 12px; }
+        .btn-link-action { background: var(--accent-primary); color: white; border: none; padding: 10px 16px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; width: fit-content; }
+        .btn-link-action:hover { opacity: 0.9; }
 
-        .back-btn { background: none; border: 1px solid var(--border); color: var(--text-main); padding: 10px 18px; border-radius: 10px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; transition: background 0.2s; }
+        .back-btn { background: none; border: 1px solid var(--border); color: var(--text-main); padding: 10px 18px; border-radius: 10px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 500; }
         .back-btn:hover { background: rgba(255,255,255,0.02); }
     </style>
 </head>
@@ -77,38 +75,16 @@
             <div class="category-block-header">
                 <h2><i class="fa-solid fa-desktop"></i> Carpeta "Computador"</h2>
                 <div style="display: flex; align-items: center; gap: 8px;">
-                    <span style="font-size: 12px; color: var(--text-muted);" id="status-text-local">Desconectado</span>
+                    <span style="font-size: 12px; color: var(--text-muted);" id="status-text-local">No Vinculada</span>
                     <span class="status-dot" id="status-dot-local"></span>
                 </div>
             </div>
 
-            <div class="alert-unlinked" id="local-alert-msg">
-                <i class="fa-solid fa-triangle-exclamation"></i>
-                <span>Acceso limitado. Vincula este perfil ejecutando la app nativa de SuperDocs en tu Windows.</span>
-            </div>
+            <button class="btn-link-action" id="btn-conectar-carpetas-view" onclick="solicitarCarpetaEnPagina()"><i class="fa-solid fa-link"></i> Vincular Carpeta de mi PC</button>
+            <button class="btn-link-action" id="btn-add-file-view" onclick="agregarArchivoDesdePagina()" style="background: var(--success); display: none;"><i class="fa-solid fa-plus"></i> Añadir Archivo</button>
 
-            <div class="file-list" id="local-files-list" style="display: none;">
-                <div class="file-row">
-                    <div class="file-main-info">
-                        <i class="fa-solid fa-file-word"></i>
-                        <span class="file-name-text">Proyecto_Investigacion_2026.docx</span>
-                    </div>
-                    <div class="file-meta-side">
-                        <div>2.4 MB</div>
-                        <div>Hace 20 min</div>
-                    </div>
+            <div class="file-list" id="local-files-list">
                 </div>
-                <div class="file-row">
-                    <div class="file-main-info">
-                        <i class="fa-solid fa-file-pdf"></i>
-                        <span class="file-name-text">Esquema_Base_Datos.pdf</span>
-                    </div>
-                    <div class="file-meta-side">
-                        <div>1.1 MB</div>
-                        <div>Ayer</div>
-                    </div>
-                </div>
-            </div>
         </div>
 
         <div class="category-block">
@@ -131,37 +107,80 @@
                         <div>14 May</div>
                     </div>
                 </div>
-                <div class="file-row">
-                    <div class="file-main-info">
-                        <i class="fa-solid fa-file-lines" style="color: var(--success);"></i>
-                        <span class="file-name-text">Planificacion_Sprints_Q2</span>
-                    </div>
-                    <div class="file-meta-side">
-                        <div>maria.manager@</div>
-                        <div>02 May</div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
 
     <script>
-        // Lógica de detección de contexto para activar la visualización del almacenamiento físico del PC
+        let globalFolderHandle = null;
+
+        async function solicitarCarpetaEnPagina() {
+            if (!('showDirectoryPicker' in window)) {
+                alert("Por favor usa Google Chrome para habilitar el motor de archivos del computador.");
+                return;
+            }
+            try {
+                globalFolderHandle = await window.showDirectoryPicker({ mode: 'readwrite' });
+                document.getElementById('status-text-local').innerText = "Conectado Chrome";
+                document.getElementById('status-text-local').style.color = "#10b981";
+                document.getElementById('status-dot-local').classList.add('active');
+                document.getElementById('btn-add-file-view').style.display = 'inline-flex';
+                document.getElementById('btn-conectar-carpetas-view').innerHTML = '<i class="fa-solid fa-arrow-rotate-right"></i> Sincronizar';
+                
+                await pintarArchivosEnPagina();
+            } catch (err) {
+                console.log("Acceso de carpeta cancelado.");
+            }
+        }
+
+        async function pintarArchivosEnPagina() {
+            const lista = document.getElementById('local-files-list');
+            if(!globalFolderHandle) return;
+            lista.innerHTML = '';
+
+            for await (const entrada of globalFolderHandle.values()) {
+                if (entrada.kind === 'file') {
+                    const f = await entrada.getFile();
+                    const row = document.createElement('div');
+                    row.className = 'file-row';
+                    row.innerHTML = `
+                        <div class="file-main-info">
+                            <i class="fa-solid fa-file-lines"></i>
+                            <span class="file-name-text">${entrada.name}</span>
+                        </div>
+                        <div class="file-meta-side">
+                            <div>${(f.size/1024).toFixed(1)} KB</div>
+                            <div>Físico</div>
+                        </div>
+                    `;
+                    lista.appendChild(row);
+                }
+            }
+        }
+
+        async function agregarArchivoDesdePagina() {
+            if(!globalFolderHandle) return;
+            const name = prompt("Nombre del archivo:", "nuevo_archivo.txt");
+            if(!name) return;
+
+            try {
+                const handle = await globalFolderHandle.getFileHandle(name, { create: true });
+                const ws = await handle.createWritable();
+                await ws.write("Creado desde el explorador secundario de SuperDoc Pro.");
+                await ws.close();
+                await pintarArchivosEnPagina();
+            } catch(e) {
+                alert("Error de escritura física: " + e.message);
+            }
+        }
+
         document.addEventListener("DOMContentLoaded", () => {
             const esAppEscritorio = window.chrome && window.chrome.webview;
-            
-            const alertMsg = document.getElementById('local-alert-msg');
-            const filesList = document.getElementById('local-files-list');
-            const statusText = document.getElementById('status-text-local');
-            const statusDot = document.getElementById('status-dot-local');
-
             if (esAppEscritorio) {
-                // El entorno es la aplicación WPF (C#)
-                alertMsg.style.display = 'none';
-                filesList.style.display = 'flex';
-                statusText.innerText = "Conectado Local";
-                statusText.style.color = "#10b981";
-                statusDot.classList.add('active');
+                document.getElementById('btn-conectar-carpetas-view').style.display = 'none';
+                document.getElementById('status-text-local').innerText = "Modo App Activo";
+                document.getElementById('status-dot-local').classList.add('active');
+                document.getElementById('local-files-list').innerHTML = '<p style="color:var(--text-muted); font-size:13px;">Controlado nativamente por WPF C#</p>';
             }
         });
     </script>
