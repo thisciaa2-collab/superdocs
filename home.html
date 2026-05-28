@@ -54,9 +54,6 @@
         
         .badge-app { background: rgba(16, 185, 129, 0.15); color: #34d399; font-size: 10px; padding: 2px 6px; border-radius: 6px; font-weight: 600; margin-left: auto; border: 1px solid rgba(16, 185, 129, 0.2); text-transform: uppercase; }
 
-        .btn-logout { margin-top: auto; color: #ef4444; }
-        .btn-logout:hover { background: rgba(239, 68, 68, 0.1); color: #f87171; }
-
         /* Contenido Principal */
         main { flex-grow: 1; padding: 40px; overflow-y: auto; position: relative; }
         .view-section { display: none; animation: fadeIn 0.3s ease forwards; }
@@ -162,9 +159,7 @@
             }
         }
 
-        // ========================================================
-        // LOGICA DE BOTÓN 1: VINCULAR CARPETA (CHROME NATIVO)
-        // ========================================================
+        // VINCULAR CARPETA (API CHROME)
         async function vincularCarpetaLocalChrome() {
             if (!('showDirectoryPicker' in window)) {
                 alert("Tu explorador actual no soporta la API nativa de directorios. ¡Utiliza Google Chrome!");
@@ -200,25 +195,20 @@
             }
         }
 
-        // ========================================================
-        // LOGICA DE BOTÓN 2: VINCULAR PC (NOTIFICACIÓN HACIA WPF)
-        // ========================================================
+        // VINCULAR PC (NOTIFICACIÓN WPF)
         function enviarSolicitudVinculacionWPF() {
             const esAppEscritorio = window.chrome && window.chrome.webview;
-            
             if (esAppEscritorio) {
-                // Envía el evento nativo en cadena de texto a la ventana de Windows C#
                 window.chrome.webview.postMessage("VINCULAR_PC_SOLICITUD");
             } else {
-                alert("La notificación de Vinculación de PC solo puede ser enviada si ejecutas la app dentro del contenedor de Windows WPF.");
+                alert("La notificación de Vinculación de PC solo funciona dentro de la aplicación de escritorio.");
             }
         }
 
-        // ESCUCHAR RESPUESTAS PROCEDENTES DEL ARCHIVO MAINWINDOW.XAML.CS
+        // ESCUCHAR RESPUESTAS DE WPF
         if (window.chrome && window.chrome.webview) {
             window.chrome.webview.addEventListener('message', event => {
                 const respuesta = event.data;
-                
                 if (respuesta.status === 'APROBADO_POR_WINDOWS') {
                     document.getElementById('placeholder-msg').innerHTML = `<span style="color:#10b981; font-weight:600;"><i class="fa-solid fa-circle-check"></i> Enlace Autorizado por Windows. Ahora puedes registrar nuevos archivos dentro de la App.</span>`;
                     document.getElementById('btn-nuevo-archivo').style.display = 'inline-flex';
@@ -229,12 +219,11 @@
             });
         }
 
-        // GUARDAR ARCHIVOS (SOPORTA AMBOS ENTORNOS)
+        // GUARDAR ARCHIVOS (.TXT)
         async function guardarArchivoEnPC() {
             const nombreArchivo = prompt("Nombre del archivo de texto:", "nota_nueva.txt");
             if (!nombreArchivo) return;
 
-            // Si está activo el enlace de carpeta tradicional (Chrome)
             if (manejadorCarpetaChrome) {
                 try {
                     const archivoHandle = await manejadorCarpetaChrome.getFileHandle(nombreArchivo, { create: true });
@@ -246,7 +235,6 @@
                     alert("Error al escribir: " + err.message);
                 }
             } else {
-                // Si se vinculó mediante la App de Windows directamente
                 alert("¡Fichero registrado! Guardado a través del flujo autorizado del PC.");
             }
         }
