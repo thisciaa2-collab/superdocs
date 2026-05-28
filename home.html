@@ -3,17 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SuperDocs | Escritura Inteligente</title>
+    <title>SuperDoc - Dashboard</title>
+    <style>
+        body { background: #05070f; color: #f3f4f6; font-family: sans-serif; display: flex; height: 100vh; margin: 0; }
+        aside { width: 260px; background: #090d1a; padding: 24px; border-right: 1px solid #1f2937; }
+        main { flex-grow: 1; padding: 40px; }
+        .card { background: #0e1326; padding: 24px; border-radius: 16px; border: 1px solid #1f2937; }
+        .btn-logout { cursor: pointer; color: #ef4444; margin-top: 20px; }
+    </style>
 </head>
 <body>
-    <nav>
-        <h1>SuperDocs</h1>
-    </nav>
+    <aside>
+        <h2>SuperDocs</h2>
+        <nav>
+            <p>🏠 Inicio</p>
+            <p>📁 Mis Documentos</p>
+            <p class="btn-logout" onclick="cerrarSesion()">🚪 Cerrar Sesión</p>
+        </nav>
+    </aside>
     <main>
-        <h2>Tu panel de control</h2>
-        <div id="app-container">
-            </div>
+        <h1>Panel de Control</h1>
+        <div class="card">
+            <h3>Bienvenido a tu área de trabajo</h3>
+            <p>Esta es la versión desplegada en Cloudflare.</p>
+        </div>
     </main>
+
     <script type="module" src="script.js"></script>
+    <script>
+        function cerrarSesion() {
+            if (window.chrome && window.chrome.webview) {
+                window.chrome.webview.postMessage("CERRAR_SESION");
+            }
+            window.location.href = "logininapp";
+        }
+    </script>
 </body>
 </html>
