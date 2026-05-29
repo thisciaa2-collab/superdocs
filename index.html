@@ -3,38 +3,273 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SuperDocs — Cargando...</title>
-    
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
-    <link rel="shortcut icon" href="favicon-32x32.png" type="image/x-icon">
-    <link rel="apple-touch-icon" href="favicon-32x32.png">
-    
+    <title>SuperDocs | Gestión Documental Avanzada</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        body {
-            background-color: #05070f;
-            color: #cbd5e1;
-            font-family: system-ui, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
+        :root {
+            --bg-light: #fdfdfc;
+            --text-dark: #0f172a;
+            --text-muted: #475569;
+            --accent-orange: #f25c38; /* Color premium de acción */
+            --accent-orange-hover: #db4a27;
+            --border-soft: rgba(0, 0, 0, 0.06);
         }
-        .loader {
-            text-align: center;
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: '-apple-system', BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            line-height: 1.5;
+        }
+
+        /* NAVBAR PREMIUM */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+            border-bottom: 1px solid var(--border-soft);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--text-dark);
+            font-weight: 700;
+            font-size: 20px;
+        }
+
+        .brand img {
+            width: 28px;
+            height: 28px;
+            object-fit: contain;
+        }
+
+        nav {
+            display: flex;
+            gap: 30px;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: var(--text-muted);
+            font-size: 14px;
             font-weight: 500;
-            letter-spacing: 0.5px;
+            transition: color 0.2s;
+        }
+
+        nav a:hover {
+            color: var(--text-dark);
+        }
+
+        .auth-buttons {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .btn-link {
+            text-decoration: none;
+            color: var(--accent-orange);
+            font-size: 14px;
+            font-weight: 600;
+            transition: opacity 0.2s;
+        }
+
+        .btn-link:hover {
+            opacity: 0.8;
+        }
+
+        .btn-orange {
+            background-color: var(--accent-orange);
+            color: white;
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background-color 0.2s;
+        }
+
+        .btn-orange:hover {
+            background-color: var(--accent-orange-hover);
+        }
+
+        /* SECCIÓN HERO PRINCIPAL */
+        .hero {
+            max-width: 900px;
+            margin: 100px auto 60px auto;
+            text-align: center;
+            padding: 0 20px;
+        }
+
+        .hero img.main-logo {
+            width: 72px;
+            height: 72px;
+            margin-bottom: 24px;
+            object-fit: contain;
+        }
+
+        .hero h1 {
+            font-size: 54px;
+            font-weight: 800;
+            letter-spacing: -1.5px;
+            line-height: 1.1;
+            margin-bottom: 24px;
+        }
+
+        .hero p.tagline {
+            font-size: 18px;
+            color: var(--text-muted);
+            max-width: 680px;
+            margin: 0 auto 40px auto;
+        }
+
+        /* BUSCADOR SIMULADO (ESTILO DE LA FOTO) */
+        .search-container {
+            display: flex;
+            max-width: 580px;
+            margin: 0 auto 50px auto;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid rgba(0, 0, 0, 0.08);
+        }
+
+        .search-box {
+            position: relative;
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            background: #fff;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 20px;
+            color: #94a3b8;
+            font-size: 16px;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 18px 20px 18px 50px;
+            border: none;
+            font-size: 15px;
+            outline: none;
+            color: var(--text-dark);
+        }
+
+        .btn-search {
+            background-color: var(--accent-orange);
+            color: white;
+            border: none;
+            padding: 0 28px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .btn-search:hover {
+            background-color: var(--accent-orange-hover);
+        }
+
+        /* SECCIÓN INFERIOR COMPLEMENTARIA (BANNER OSCURO) */
+        .cta-banner {
+            background-color: #111827;
+            color: white;
+            padding: 80px 40px;
+            text-align: center;
+            margin-top: 100px;
+        }
+
+        .cta-banner h2 {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .cta-banner p {
+            color: #9ca3af;
+            font-size: 16px;
+            max-width: 600px;
+            margin: 0 auto 32px auto;
+        }
+
+        .btn-install {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background-color: #fff;
+            color: #111827;
+            text-decoration: none;
+            padding: 14px 28px;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            transition: transform 0.2s, background-color 0.2s;
+        }
+
+        .btn-install:hover {
+            transform: translateY(-2px);
+            background-color: #f3f4f6;
         }
     </style>
-
-    <script>
-        // Redirección instantánea sin romper el botón "Atrás" del navegador
-        window.location.replace("/login");
-    </script>
 </head>
 <body>
-    <div class="loader">
-        <p>Iniciando SuperDocs...</p>
-    </div>
+
+    <header>
+        <a href="#" class="brand">
+            <img src="favicon-32x32.png" alt="SuperDocs Logo">
+            <span>SuperDocs</span>
+        </a>
+        <nav>
+            <a href="#">Cómo funciona</a>
+            <a href="#">Características</a>
+            <a href="#">Precios</a>
+        </nav>
+        <div class="auth-buttons">
+            <a href="login.html" class="btn-link">Log in</a>
+            <a href="login.html" class="btn-orange">Sign up</a>
+        </div>
+    </header>
+
+    <main class="hero">
+        <img src="favicon-32x32.png" alt="SuperDocs Official" class="main-logo">
+        
+        <h1>Buscador de documentos locales</h1>
+        <p class="tagline">Ingresa el nombre del archivo o una palabra clave para indexar y localizar tus carpetas en tiempo real. Perfecto para reclamos de autoría, auditorías y control local.</p>
+        
+        <div class="search-container">
+            <div class="search-box">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" placeholder="Nombre del documento o ruta local...">
+            </div>
+            <button class="btn-search">Buscar</button>
+        </div>
+    </main>
+
+    <section class="cta-banner">
+        <h2>Lleva la sincronización al siguiente nivel</h2>
+        <p>Conéctate directamente con el núcleo de tu PC. Nuestra aplicación nativa te permite editar archivos en disco sin restricciones de navegador.</p>
+        
+        <a href="#" class="btn-install">
+            <i class="fa-brands fa-windows" style="font-size: 18px; color: #0078d4;"></i>
+            Instalar aplicación
+        </a>
+    </section>
+
 </body>
 </html>
