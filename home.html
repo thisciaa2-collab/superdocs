@@ -2,48 +2,351 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SuperDoc Pro | Elite Workspace</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <style>
-        :root { --bg:#070a13; --side:#0b0e1a; --accent:#6366f1; --glass:rgba(255,255,255,0.03); }
-        body { background: var(--bg); color: #fff; font-family: 'Segoe UI', sans-serif; display: flex; height: 100vh; margin: 0; }
-        aside { width: 260px; background: var(--side); padding: 30px; display: flex; flex-direction: column; border-right: 1px solid #1e293b; }
-        .nav-btn { padding: 15px; cursor: pointer; color: #94a3b8; border-radius: 8px; transition: 0.3s; }
-        .nav-btn:hover { background: var(--glass); color: #fff; }
-        main { flex-grow: 1; padding: 40px; display: flex; gap: 20px; }
-        .card { background: var(--glass); padding: 20px; border-radius: 16px; border: 1px solid #1e293b; cursor: pointer; }
-        .editor { width: 400px; background: var(--side); padding: 20px; border-radius: 16px; display: none; }
-        .editor.active { display: flex; flex-direction: column; }
-        textarea { flex-grow: 1; background: var(--bg); color: #fff; border: 1px solid #334155; border-radius: 8px; padding: 10px; }
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+
+        :root {
+            --bg: #020617;
+            --sidebar: #05070a;
+            --card-bg: rgba(15, 23, 42, 0.6);
+            --accent: #6366f1;
+            --accent-glow: rgba(99, 102, 241, 0.3);
+            --border: rgba(255, 255, 255, 0.08);
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --success: #10b981;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Inter', sans-serif; }
+        
+        body {
+            background-color: var(--bg);
+            background-image: radial-gradient(circle at top right, rgba(99, 102, 241, 0.05), transparent),
+                              radial-gradient(circle at bottom left, rgba(16, 185, 129, 0.03), transparent);
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* SIDEBAR PREMIUM */
+        aside {
+            width: 280px;
+            background: var(--sidebar);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            padding: 30px 20px;
+            z-index: 100;
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 50px;
+            padding-left: 10px;
+        }
+
+        .brand img { width: 32px; height: 32px; filter: drop-shadow(0 0 8px var(--accent-glow)); }
+        .brand h2 { font-size: 20px; font-weight: 700; letter-spacing: -0.5px; }
+
+        .nav-group { display: flex; flex-direction: column; gap: 8px; flex-grow: 1; }
+        
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 16px;
+            color: var(--text-muted);
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .nav-btn:hover {
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.03);
+            transform: translateX(5px);
+        }
+
+        .nav-btn.active {
+            background: var(--accent);
+            color: white;
+            box-shadow: 0 10px 20px -5px var(--accent-glow);
+        }
+
+        .nav-btn i { font-size: 18px; width: 20px; text-align: center; }
+
+        /* MAIN CONTENT AREA */
+        main {
+            flex-grow: 1;
+            padding: 40px;
+            overflow-y: auto;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .header-context {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        h1 { font-size: 32px; font-weight: 700; letter-spacing: -1px; }
+
+        /* BENTO GRID LAYOUT */
+        .bento-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-auto-rows: 160px;
+            gap: 20px;
+        }
+
+        .bento-item {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 24px;
+            backdrop-filter: blur(12px);
+            transition: all 0.3s ease;
+        }
+
+        .bento-item:hover { border-color: var(--accent); transform: translateY(-4px); }
+        
+        .large { grid-column: span 2; grid-row: span 2; }
+        .tall { grid-row: span 2; }
+
+        /* EXPLORADOR DE ARCHIVOS */
+        .file-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+
+        .file-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 14px 20px;
+            background: rgba(255,255,255,0.02);
+            border: 1px solid var(--border);
+            border-radius: 14px;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .file-row:hover { background: rgba(99, 102, 241, 0.1); border-color: var(--accent); }
+        .file-info { display: flex; align-items: center; gap: 15px; }
+        .file-info i { color: var(--accent); font-size: 20px; }
+
+        /* EDITOR SIDEBAR (FLOATING PREMIUM) */
+        .editor-overlay {
+            position: fixed;
+            top: 20px; right: 20px; bottom: 20px;
+            width: 450px;
+            background: #0b0e1a;
+            border-left: 1px solid var(--border);
+            box-shadow: -20px 0 50px rgba(0,0,0,0.5);
+            border-radius: 24px;
+            display: none;
+            flex-direction: column;
+            padding: 30px;
+            z-index: 1000;
+            border: 1px solid var(--border);
+        }
+
+        .editor-overlay.active { display: flex; animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1); }
+
+        @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+
+        textarea {
+            flex-grow: 1;
+            background: #020617;
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 20px;
+            color: white;
+            font-size: 14px;
+            line-height: 1.6;
+            resize: none;
+            margin: 20px 0;
+            outline: none;
+        }
+
+        textarea:focus { border-color: var(--accent); }
+
+        .btn-primary {
+            background: var(--accent);
+            color: white;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: 0.2s;
+        }
+
+        .btn-primary:hover { opacity: 0.9; transform: scale(1.02); }
+
+        .status-badge {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--success);
+            padding: 6px 12px;
+            border-radius: 100px;
+            font-size: 12px;
+            font-weight: 600;
+            border: 1px solid rgba(16, 185, 129, 0.2);
+        }
     </style>
 </head>
 <body>
+
     <aside>
-        <h2>SuperDoc Pro</h2>
-        <div class="nav-btn" onclick="vincular()"><i class="fa-solid fa-desktop"></i> Vincular PC</div>
-        <div class="nav-btn" onclick="cerrar()" style="margin-top:auto; color:#ef4444;"><i class="fa-solid fa-power-off"></i> Salir</div>
+        <div class="brand">
+            <img src="favicon-32x32.png" alt="SuperDocs">
+            <h2>SuperDocs Pro</h2>
+        </div>
+        <div class="nav-group">
+            <div class="nav-btn active" onclick="switchView('home')"><i class="fa-solid fa-house"></i> Home Dashboard</div>
+            <div class="nav-btn" onclick="vincularPC()"><i class="fa-solid fa-laptop-code"></i> Sincronizar PC</div>
+            <div class="nav-btn"><i class="fa-solid fa-cloud-arrow-up"></i> Nube Virtual</div>
+        </div>
+        <div class="nav-btn" onclick="logout()" style="color: #ef4444; margin-top: auto;">
+            <i class="fa-solid fa-power-off"></i> Cerrar Sesión
+        </div>
     </aside>
+
     <main>
-        <div id="grid" style="display:grid; grid-template-columns:1fr 1fr; gap:20px; width:100%"></div>
-        <div class="editor" id="panel">
-            <h3 id="fname">Archivo</h3>
-            <textarea id="fcontent"></textarea>
-            <button onclick="guardar()" style="background:var(--accent); color:white; border:none; padding:10px; cursor:pointer;">Guardar</button>
+        <div class="header-context">
+            <h1>Workspace <span style="color: var(--accent)">Elite</span></h1>
+            <div class="status-badge" id="status">Modo App Activo</div>
+        </div>
+
+        <div class="bento-grid">
+            <div class="bento-item large">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <h3>Gestor de Archivos Locales</h3>
+                    <button class="btn-primary" style="padding: 8px 16px; font-size: 13px;" onclick="vincularPC()">
+                        <i class="fa-solid fa-plus"></i> Vincular Carpeta
+                    </button>
+                </div>
+                <div class="file-list" id="files">
+                    <p style="color: var(--text-muted); text-align: center; margin-top: 50px;">
+                        No hay carpetas vinculadas. Presiona "Sincronizar PC" en el menú.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="bento-item tall">
+                <h3 style="margin-bottom: 20px;">Estado del Sistema</h3>
+                <div style="display: flex; flex-direction: column; gap: 20px;">
+                    <div>
+                        <p style="font-size: 12px; color: var(--text-muted);">Sincronización</p>
+                        <p style="font-size: 24px; font-weight: 700;">100%</p>
+                    </div>
+                    <div>
+                        <p style="font-size: 12px; color: var(--text-muted);">Seguridad AES-256</p>
+                        <p style="font-size: 18px; color: var(--success); font-weight: 700;">ACTIVA</p>
+                    </div>
+                    <div style="margin-top: 40px; text-align: center;">
+                        <i class="fa-solid fa-microchip" style="font-size: 50px; color: var(--accent); opacity: 0.5;"></i>
+                        <p style="font-size: 12px; margin-top: 10px;">Motor V2 de Windows</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="bento-item">
+                <h3>Recientes</h3>
+                <p style="font-size: 14px; margin-top: 10px; color: var(--text-muted);">No hay actividad reciente en esta sesión.</p>
+            </div>
         </div>
     </main>
+
+    <div class="editor-overlay" id="editor">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h2 id="fname" style="font-size: 18px;">Archivo</h2>
+            <i class="fa-solid fa-xmark" style="cursor: pointer;" onclick="closeEditor()"></i>
+        </div>
+        <textarea id="fcontent" placeholder="Comienza a escribir aquí..."></textarea>
+        <button class="btn-primary" onclick="saveFile()">
+            <i class="fa-solid fa-floppy-disk"></i> Guardar en PC
+        </button>
+    </div>
+
     <script>
-        let file = "";
-        function vincular() { window.chrome?.webview.postMessage("VINCULAR_PC_SOLICITUD"); }
-        function cerrar() { localStorage.clear(); window.location.href = "https://superdocs.pages.dev/logininapp"; }
-        function guardar() { window.chrome?.webview.postMessage("GUARDAR_ANCLA:"+file+"|"+document.getElementById('fcontent').value); document.getElementById('panel').classList.remove('active'); }
-        
-        window.chrome?.webview.addEventListener('message', e => {
-            document.getElementById('grid').innerHTML = '';
-            e.data.files.forEach(f => {
-                let div = document.createElement('div');
-                div.className = 'card';
-                div.innerText = f.name;
-                div.onclick = () => { file = f.name; document.getElementById('fname').innerText=f.name; document.getElementById('panel').classList.add('active'); };
-                document.getElementById('grid').appendChild(div);
-            });
+        let currentFile = "";
+
+        function vincularPC() {
+            if (window.chrome?.webview) {
+                window.chrome.webview.postMessage("VINCULAR_PC_SOLICITUD");
+            } else {
+                alert("Esta función solo está disponible en la aplicación de Windows.");
+            }
+        }
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = window.chrome?.webview ? "logininapp.html" : "login.html";
+        }
+
+        window.chrome?.webview?.addEventListener('message', e => {
+            const data = e.data;
+            if (data.files) {
+                const container = document.getElementById('files');
+                container.innerHTML = '';
+                data.files.forEach(f => {
+                    const row = document.createElement('div');
+                    row.className = 'file-row';
+                    row.onclick = () => openEditor(f.name);
+                    row.innerHTML = `
+                        <div class="file-info"><i class="fa-solid fa-file-lines"></i> <span>${f.name}</span></div>
+                        <span style="font-size: 12px; color: var(--text-muted);">${f.size}</span>
+                    `;
+                    container.appendChild(row);
+                });
+            }
+        });
+
+        function openEditor(name) {
+            currentFile = name;
+            document.getElementById('fname').innerText = name;
+            document.getElementById('fcontent').value = "Cargando contenido físico...";
+            document.getElementById('editor').classList.add('active');
+        }
+
+        function closeEditor() {
+            document.getElementById('editor').classList.remove('active');
+        }
+
+        function saveFile() {
+            const content = document.getElementById('fcontent').value;
+            if (window.chrome?.webview) {
+                window.chrome.webview.postMessage(`GUARDAR_ANCLA:${currentFile}|${content}`);
+                closeEditor();
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            if (!window.chrome?.webview) {
+                document.getElementById('status').innerText = "Modo Web (Limitado)";
+                document.getElementById('status').style.color = "#f59e0b";
+            }
         });
     </script>
 </body>
